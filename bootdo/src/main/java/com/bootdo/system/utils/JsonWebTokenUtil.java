@@ -11,16 +11,21 @@ import javax.xml.bind.DatatypeConverter;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import com.bootdo.system.vo.JwtAccount;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.CompressionCodec;
 import io.jsonwebtoken.CompressionCodecResolver;
 import io.jsonwebtoken.CompressionCodecs;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.impl.DefaultHeader;
 import io.jsonwebtoken.impl.DefaultJwsHeader;
 import io.jsonwebtoken.impl.TextCodec;
@@ -86,92 +91,26 @@ public class JsonWebTokenUtil {
     }
 
     /**
-     * 解析JWT的Payload
+     * 验签JWT
+     *
+     * @param jwt json web token
      */
-    public static String parseJwtPayload(String jwt){
-        Assert.hasText(jwt, "JWT String argument cannot be null or empty.");
-        String base64UrlEncodedHeader = null;
-        String base64UrlEncodedPayload = null;
-        String base64UrlEncodedDigest = null;
-        int delimiterCount = 0;
-        StringBuilder sb = new StringBuilder(128);
-        for (char c : jwt.toCharArray()) {
-            if (c == '.') {
-                CharSequence tokenSeq = io.jsonwebtoken.lang.Strings.clean(sb);
-                String token = tokenSeq!=null?tokenSeq.toString():null;
-
-                if (delimiterCount == 0) {
-                    base64UrlEncodedHeader = token;
-                } else if (delimiterCount == 1) {
-                    base64UrlEncodedPayload = token;
-                }
-
-                delimiterCount++;
-                sb.setLength(0);
-            } else {
-                sb.append(c);
-            }
-        }
-        if (delimiterCount != 2) {
-            String msg = "JWT strings must contain exactly 2 period characters. Found: " + delimiterCount;
-            throw new MalformedJwtException(msg);
-        }
-        if (sb.length() > 0) {
-            base64UrlEncodedDigest = sb.toString();
-        }
-        if (base64UrlEncodedPayload == null) {
-            throw new MalformedJwtException("JWT string '" + jwt + "' is missing a body/payload.");
-        }
-        // =============== Header =================
-        Header header = null;
-        CompressionCodec compressionCodec = null;
-        if (base64UrlEncodedHeader != null) {
-            String origValue = TextCodec.BASE64URL.decodeToString(base64UrlEncodedHeader);
-            Map<String, Object> m = readValue(origValue);
-            if (base64UrlEncodedDigest != null) {
-                header = new DefaultJwsHeader(m);
-            } else {
-                header = new DefaultHeader(m);
-            }
-            compressionCodec = codecResolver.resolveCompressionCodec(header);
-        }
-        // =============== Body =================
-        String payload;
-        if (compressionCodec != null) {
-            byte[] decompressed = compressionCodec.decompress(TextCodec.BASE64URL.decode(base64UrlEncodedPayload));
-            payload = new String(decompressed, io.jsonwebtoken.lang.Strings.UTF_8);
-        } else {
-            payload = TextCodec.BASE64URL.decodeToString(base64UrlEncodedPayload);
-        }
-        return payload;
+    public static JwtAccount parseJwt(String jwt, String appKey) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException {
+        Claims claims = Jwts.parser()
+                .setSigningKey(DatatypeConverter.parseBase64Binary(appKey))
+                .parseClaimsJws(jwt)
+                .getBody();
+        JwtAccount jwtAccount = new JwtAccount();
+        jwtAccount.setTokenId(claims.getId());// 令牌ID
+        jwtAccount.setAppId(claims.getSubject());// 客户标识
+        jwtAccount.setIssuer(claims.getIssuer());// 签发者
+        jwtAccount.setIssuedAt(claims.getIssuedAt());// 签发时间
+        jwtAccount.setExpiration(claims.getExpiration());
+        jwtAccount.setAudience(claims.getAudience());// 接收方
+        jwtAccount.setRoles(claims.get("roles", String.class));// 访问主张-角色
+        jwtAccount.setPerms(claims.get("perms", String.class));// 访问主张-权限
+        return jwtAccount;
     }
 
-
-    /* *
-     * @Description
-     * @Param [val] 从json数据中读取格式化map
-     * @Return java.util.Map<java.lang.String,java.lang.Object>
-     */
-    @SuppressWarnings("unchecked")
-    public static Map<String, Object> readValue(String val) {
-        try {
-            return MAPPER.readValue(val, Map.class);
-        } catch (IOException e) {
-            throw new MalformedJwtException("Unable to read JSON value: " + val, e);
-        }
-    }
-
-    /**
-     * 分割字符串进SET
-     */
-    @SuppressWarnings("unchecked")
-    public static Set<String> split(String str) {
-
-        Set<String> set = new HashSet<>();
-        if (StringUtils.isEmpty(str))
-            return set;
-        set.addAll(CollectionUtils.arrayToList(str.split(",")));
-        return set;
-    }
 
 }

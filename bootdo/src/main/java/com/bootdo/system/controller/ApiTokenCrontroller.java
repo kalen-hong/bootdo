@@ -1,5 +1,6 @@
 package com.bootdo.system.controller;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bootdo.system.constant.ApiTokenConstants;
 import com.bootdo.system.utils.JsonWebTokenUtil;
+import com.bootdo.system.vo.JwtAccount;
 import com.bootdo.system.vo.ResponseVo;
 
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -45,6 +47,11 @@ public class ApiTokenCrontroller {
 //		Map<String, Object> data=new HashMap<String,Object>();
 //		data.put("accessToken", token);
 //		data.put("expiresIn", ApiTokenConstants.TOKEN_EXPIRE_TIME);
+		JwtAccount jwtAccount=JsonWebTokenUtil.parseJwt(accessToken, JsonWebTokenUtil.SECRET_KEY);
+		if(new Date().after(jwtAccount.getExpiration())) {
+			//token已过期
+			
+		}
 		return new ResponseVo<Map<String, Object>>("0", "success", null);
 	}
 	

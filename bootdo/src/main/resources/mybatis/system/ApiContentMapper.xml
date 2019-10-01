@@ -6,7 +6,7 @@
 	<select id="get" resultType="com.bootdo.system.domain.ApiContentDO">
 		select `id`,`api_url`,`api_desc`,`request_mode`,`request_cost`,`status`,`gtm_create`,`gtm_modified` from system_api_content where id = #{value}
 	</select>
-
+	
 	<select id="list" resultType="com.bootdo.system.domain.ApiContentDO">
 		select `id`,`api_url`,`api_desc`,`request_mode`,`request_cost`,`status`,`gtm_create`,`gtm_modified` from system_api_content
         <where>  
@@ -95,5 +95,9 @@
 			#{id}
 		</foreach>
 	</delete>
-
+	
+	
+	<select id="listAllApi" resultType="com.bootdo.system.domain.ApiContentDO">
+		select `api_url`,`api_desc`,`request_mode`,`request_cost` from system_api_content
+	</select>
 </mapper>

@@ -29,4 +29,6 @@ public interface ApiContentDao {
 	int remove(Long id);
 	
 	int batchRemove(Long[] ids);
+	
+	List<ApiContentDO> listAllApi();
 }

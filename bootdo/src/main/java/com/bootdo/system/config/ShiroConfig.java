@@ -5,6 +5,7 @@ import com.bootdo.common.config.Constant;
 import com.bootdo.common.redis.shiro.RedisCacheManager;
 import com.bootdo.common.redis.shiro.RedisManager;
 import com.bootdo.common.redis.shiro.RedisSessionDAO;
+import com.bootdo.system.constant.ApiUrlConstants;
 import com.bootdo.system.shiro.UserRealm;
 //import org.apache.shiro.cache.CacheManager;
 import net.sf.ehcache.CacheManager;
@@ -87,7 +88,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/", "anon");
         filterChainDefinitionMap.put("/blog", "anon");
         filterChainDefinitionMap.put("/blog/open/**", "anon");
-        filterChainDefinitionMap.put("/**", "authc");
+        filterChainDefinitionMap.put(ApiUrlConstants.INTERCEPT_URL, "authc");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return shiroFilterFactoryBean;
     }

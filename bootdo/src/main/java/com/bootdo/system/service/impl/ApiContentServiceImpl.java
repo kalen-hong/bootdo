@@ -51,5 +51,10 @@ public class ApiContentServiceImpl implements ApiContentService {
 	public int batchRemove(Long[] ids){
 		return apiContentDao.batchRemove(ids);
 	}
+
+	@Override
+	public List<ApiContentDO> listAllApi() {
+		return apiContentDao.listAllApi();
+	}
 	
 }

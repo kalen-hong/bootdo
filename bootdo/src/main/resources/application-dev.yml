@@ -1,7 +1,4 @@
-bootdo:
-  uploadPath: c:/var/uploaded_files/
-  username: admin
-  password: 111111
+
 logging:
   level:
     root: info
@@ -38,6 +35,10 @@ spring:
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
     # 合并多个DruidDataSource的监控数据
     #useGlobalDataSourceStat: true
+    
+  cache:
+    type: redis
+    
   redis:
     host: localhost
     port: 6379
@@ -54,3 +55,4 @@ spring:
         max-active: 100
         # 连接池最大阻塞等待时间（使用负值表示没有限制）
         max-wait: -1
+        

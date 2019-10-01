@@ -8,7 +8,7 @@ public class ResponseVo<T> implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	public static final String SUCCESS = "0";
-	public static final String FAIL = "-1";
+	public static final String FAIL = "1";
 	private String code;
 	private String msg;
 	private T data;

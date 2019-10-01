@@ -48,13 +48,6 @@ function load() {
 									checkbox : true
 								},
 																{
-<<<<<<< HEAD
-=======
-									field : 'id', 
-									title : '用户id'
-								},
-																{
->>>>>>> 3a3a2c6755b195475b7a21bf5f334dfbc7f6e007
 									field : 'apiUrl', 
 									title : '接口地址' 
 								},
@@ -76,15 +69,9 @@ function load() {
 																	align : 'center',
 																	formatter : function(value, row, index) {
 																		if (value == '1') {
-<<<<<<< HEAD
 																			return '<span class="label label-primary">启用</span>';
 																		} else {
 																			return '<span class="label label-danger">禁用</span>';
-=======
-																			return '<span class="label label-danger">启用</span>';
-																		} else if (value == '2') {
-																			return '<span class="label label-primary">禁用</span>';
->>>>>>> 3a3a2c6755b195475b7a21bf5f334dfbc7f6e007
 																		}
 																	}
 								},

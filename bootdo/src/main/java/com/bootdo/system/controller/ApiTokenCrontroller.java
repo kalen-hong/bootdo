@@ -40,12 +40,12 @@ public class ApiTokenCrontroller {
 	public ResponseVo<Map<String, Object>> refreshToken(
 			@RequestParam("accessToken") String accessToken) {
 		// 时间以秒计算,token有效刷新时间是token有效过期时间的2倍
-		String token = JsonWebTokenUtil.issueJWT(UUID.randomUUID().toString(), String.valueOf(clientId), "token-server",
-				ApiTokenConstants.TOKEN_EXPIRE_TIME, null, SignatureAlgorithm.HS512);
-		Map<String, Object> data=new HashMap<String,Object>();
-		data.put("accessToken", token);
-		data.put("expiresIn", ApiTokenConstants.TOKEN_EXPIRE_TIME);
-		return new ResponseVo<Map<String, Object>>("0", "success", data);
+//		String token = JsonWebTokenUtil.issueJWT(UUID.randomUUID().toString(), String.valueOf(clientId), "token-server",
+//				ApiTokenConstants.TOKEN_EXPIRE_TIME, null, SignatureAlgorithm.HS512);
+//		Map<String, Object> data=new HashMap<String,Object>();
+//		data.put("accessToken", token);
+//		data.put("expiresIn", ApiTokenConstants.TOKEN_EXPIRE_TIME);
+		return new ResponseVo<Map<String, Object>>("0", "success", null);
 	}
 	
 }

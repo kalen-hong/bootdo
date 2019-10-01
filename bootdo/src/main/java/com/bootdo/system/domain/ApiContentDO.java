@@ -14,8 +14,12 @@ import java.util.Date;
  */
 public class ApiContentDO implements Serializable {
 	private static final long serialVersionUID = 1L;
+<<<<<<< HEAD
 	
 	
+=======
+
+>>>>>>> 3a3a2c6755b195475b7a21bf5f334dfbc7f6e007
 
 	//
 	private Long id;

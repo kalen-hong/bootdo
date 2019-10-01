@@ -48,10 +48,6 @@ function load() {
 									checkbox : true
 								},
 																{
-									field : 'id', 
-									title : '用户id'
-								},
-																{
 									field : 'apiUrl', 
 									title : '接口地址' 
 								},
@@ -73,9 +69,9 @@ function load() {
 																	align : 'center',
 																	formatter : function(value, row, index) {
 																		if (value == '1') {
-																			return '<span class="label label-danger">启用</span>';
-																		} else if (value == '2') {
-																			return '<span class="label label-primary">禁用</span>';
+																			return '<span class="label label-primary">启用</span>';
+																		} else {
+																			return '<span class="label label-danger">禁用</span>';
 																		}
 																	}
 								},

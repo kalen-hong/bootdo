@@ -1,5 +1,6 @@
 package com.bootdo.system.controller;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -75,6 +76,7 @@ public class UserBusinessController extends BaseController {
 	@PostMapping("/save")
 	@RequiresPermissions("system:userBusiness:add")
 	public R save( UserBusinessDO userBusiness){
+		userBusiness.setGmtCreate(new Date());
 		if(userBusinessService.save(userBusiness)>0){
 			return R.ok();
 		}

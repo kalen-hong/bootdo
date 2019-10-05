@@ -25,7 +25,7 @@ public class ApiContentDO implements Serializable {
 	private String requestMode;
 	//调用费用
 	private String requestCost;
-	//状态，1启用 2禁用
+	//状态，1启用 0禁用
 	private Integer status;
 	//创建时间
 	private Date gtmCreate;

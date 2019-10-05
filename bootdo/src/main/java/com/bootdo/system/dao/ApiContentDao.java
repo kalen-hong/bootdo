@@ -31,4 +31,6 @@ public interface ApiContentDao {
 	int batchRemove(Long[] ids);
 	
 	List<ApiContentDO> listAllApi();
+	
+	List<String> listAllEnabledUrl();
 }

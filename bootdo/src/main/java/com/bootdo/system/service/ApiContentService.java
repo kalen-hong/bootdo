@@ -4,6 +4,7 @@ import com.bootdo.system.domain.ApiContentDO;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * api业务内容表
@@ -29,4 +30,6 @@ public interface ApiContentService {
 	int batchRemove(Long[] ids);
 	
 	List<ApiContentDO> listAllApi();
+	
+	Set<String> listAllEnabledUrl();
 }

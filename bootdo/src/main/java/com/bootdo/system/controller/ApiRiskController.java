@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,7 +30,7 @@ public class ApiRiskController {
 	@Autowired
 	protected ApiContentService apiContentService;
 	
-	@RequestMapping("/listOpenApi")
+	@GetMapping("/listOpenApi")
 	public ResponseVo<List<ApiContentDO>> listOpenApi(@RequestParam("accessToken")String accessToken,@RequestParam("timestamp")String timestamp,@RequestParam("sign")String sign){
 		log.info("查询所有的风控接口入参accessToken【"+accessToken+"】，timestamp【"+timestamp+"】，sign【"+sign+"】");
 		if(StringUtils.isEmpty(accessToken)||StringUtils.isEmpty(timestamp)||StringUtils.isEmpty(sign)) {

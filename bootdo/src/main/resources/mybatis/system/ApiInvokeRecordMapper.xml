@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bootdo.system.dao.ApiInvokeRecordDao">
+  <resultMap id="BaseResultMap" type="com.bootdo.system.domain.ApiInvokeRecord">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="interface_name" jdbcType="VARCHAR" property="interfaceName" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="invoke_time" jdbcType="DATE" property="invokeTime" />
+    <result column="CLIENT_ID" jdbcType="VARCHAR" property="clientId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, interface_name, url, remark, invoke_time, CLIENT_ID
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from api_invoke_record
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from api_invoke_record
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.bootdo.system.domain.ApiInvokeRecord" useGeneratedKeys="true">
+    insert into api_invoke_record (interface_name, url, remark, 
+      invoke_time, CLIENT_ID)
+    values (#{interfaceName,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{invokeTime,jdbcType=DATE}, #{clientId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.bootdo.system.domain.ApiInvokeRecord" useGeneratedKeys="true">
+    insert into api_invoke_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="interfaceName != null">
+        interface_name,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="invokeTime != null">
+        invoke_time,
+      </if>
+      <if test="clientId != null">
+        CLIENT_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="interfaceName != null">
+        #{interfaceName,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="invokeTime != null">
+        #{invokeTime,jdbcType=DATE},
+      </if>
+      <if test="clientId != null">
+        #{clientId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bootdo.system.domain.ApiInvokeRecord">
+    update api_invoke_record
+    <set>
+      <if test="interfaceName != null">
+        interface_name = #{interfaceName,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="invokeTime != null">
+        invoke_time = #{invokeTime,jdbcType=DATE},
+      </if>
+      <if test="clientId != null">
+        CLIENT_ID = #{clientId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bootdo.system.domain.ApiInvokeRecord">
+    update api_invoke_record
+    set interface_name = #{interfaceName,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      invoke_time = #{invokeTime,jdbcType=DATE},
+      CLIENT_ID = #{clientId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

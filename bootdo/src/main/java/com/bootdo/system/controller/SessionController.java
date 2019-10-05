@@ -1,6 +1,5 @@
 package com.bootdo.system.controller;
 
-import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
 

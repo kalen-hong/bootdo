@@ -1,8 +1,10 @@
 package com.bootdo.system.service.impl;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +52,17 @@ public class UserBusinessServiceImpl implements UserBusinessService {
 	@Override
 	public int batchRemove(Long[] ids){
 		return userBusinessDao.batchRemove(ids);
+	}
+
+	@Override
+	public UserBusinessDO getByClientId(String clientId) {
+		Map<String,Object> map=new HashMap<String,Object>();
+		map.put("clientId", clientId);
+		List<UserBusinessDO> list=list(map);
+		if(CollectionUtils.isEmpty(list)) {
+			return null;
+		}
+		return list.get(0);
 	}
 	
 }

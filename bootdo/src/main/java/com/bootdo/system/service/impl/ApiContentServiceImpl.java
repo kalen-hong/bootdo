@@ -1,10 +1,14 @@
 package com.bootdo.system.service.impl;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.bootdo.system.dao.ApiContentDao;
 import com.bootdo.system.domain.ApiContentDO;
@@ -55,6 +59,15 @@ public class ApiContentServiceImpl implements ApiContentService {
 	@Override
 	public List<ApiContentDO> listAllApi() {
 		return apiContentDao.listAllApi();
+	}
+
+	@Override
+	public Set<String> listAllEnabledUrl() {
+		List<String> urlList=apiContentDao.listAllEnabledUrl();
+		if(CollectionUtils.isEmpty(urlList)) {
+			return new HashSet<String>();
+		}
+		return urlList.stream().collect(Collectors.toSet());
 	}
 	
 }

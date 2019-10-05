@@ -1,15 +1,10 @@
 package com.bootdo.system.controller;
 
-import com.bootdo.common.annotation.Log;
-import com.bootdo.common.config.BootdoConfig;
-import com.bootdo.common.controller.BaseController;
-import com.bootdo.common.domain.FileDO;
-import com.bootdo.common.domain.Tree;
-import com.bootdo.common.service.FileService;
-import com.bootdo.common.utils.*;
-import com.bootdo.system.domain.MenuDO;
-import com.bootdo.system.service.MenuService;
-import io.swagger.models.auth.In;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -21,12 +16,21 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
+import com.bootdo.common.annotation.Log;
+import com.bootdo.common.config.BootdoConfig;
+import com.bootdo.common.controller.BaseController;
+import com.bootdo.common.domain.FileDO;
+import com.bootdo.common.domain.Tree;
+import com.bootdo.common.service.FileService;
+import com.bootdo.common.utils.MD5Utils;
+import com.bootdo.common.utils.R;
+import com.bootdo.common.utils.RandomValidateCodeUtil;
+import com.bootdo.common.utils.ShiroUtils;
+import com.bootdo.common.utils.StringUtils;
+import com.bootdo.system.domain.MenuDO;
+import com.bootdo.system.service.MenuService;
 
 @Controller
 public class LoginController extends BaseController {
@@ -98,6 +102,7 @@ public class LoginController extends BaseController {
             subject.login(token);
             return R.ok();
         } catch (AuthenticationException e) {
+        	logger.error(e.getMessage(),e);
             return R.error("用户或密码错误");
         }
     }

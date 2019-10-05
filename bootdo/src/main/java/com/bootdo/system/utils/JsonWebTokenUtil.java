@@ -1,36 +1,22 @@
 package com.bootdo.system.utils;
 
-import java.io.IOException;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.bootdo.system.vo.JwtAccount;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.CompressionCodec;
-import io.jsonwebtoken.CompressionCodecResolver;
 import io.jsonwebtoken.CompressionCodecs;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Header;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.impl.DefaultHeader;
-import io.jsonwebtoken.impl.DefaultJwsHeader;
-import io.jsonwebtoken.impl.TextCodec;
-import io.jsonwebtoken.impl.compression.DefaultCompressionCodecResolver;
-import io.jsonwebtoken.lang.Assert;
 
 /* *
  * @Author tomsun28
@@ -40,12 +26,6 @@ import io.jsonwebtoken.lang.Assert;
 public class JsonWebTokenUtil {
 
     public static final String SECRET_KEY = "?::4343fdf4fdf6cvf):";
-    private static final ObjectMapper MAPPER = new ObjectMapper();
-    private static  CompressionCodecResolver codecResolver = new DefaultCompressionCodecResolver();
-
-    private JsonWebTokenUtil() {
-
-    }
 
     /* *
      * @Description  json web token 签发
@@ -111,6 +91,5 @@ public class JsonWebTokenUtil {
         jwtAccount.setPerms(claims.get("perms", String.class));// 访问主张-权限
         return jwtAccount;
     }
-
-
+    
 }

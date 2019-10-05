@@ -9,6 +9,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,13 +31,13 @@ import io.jsonwebtoken.SignatureAlgorithm;
  * @discript
  */
 @RestController
-@RequestMapping("api/token")
+@RequestMapping("/api/token")
 public class ApiTokenCrontroller {
 	protected Logger log=LoggerFactory.getLogger(ApiTokenCrontroller.class);
 	@Autowired
 	private UserBusinessService userBusinessService;
 	
-	@RequestMapping("/getToken")
+	@GetMapping("/getToken")
 	public ResponseVo<Map<String, Object>> getToken(@RequestParam("clientId") String clientId,
 			@RequestParam("clientSecret") String clientSecret) {
 		log.info("获取token信息入参，clientId【"+clientId+"】，clientSecret【"+clientSecret+"】");
@@ -62,7 +63,7 @@ public class ApiTokenCrontroller {
 		return clientSecret.equals(list.get(0).getClientSecret());
 	}
 	
-	@RequestMapping("/refreshToken")
+	@GetMapping("/refreshToken")
 	public ResponseVo<Map<String, Object>> refreshToken(
 			@RequestParam("accessToken") String accessToken) {
 		JwtAccount jwtAccount=JsonWebTokenUtil.parseJwt(accessToken, JsonWebTokenUtil.SECRET_KEY);

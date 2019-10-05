@@ -46,6 +46,6 @@ public class MD5Util {
             LOGGER.warn(e.getMessage(),e);
             return null;
         }
-
     }
+
 }

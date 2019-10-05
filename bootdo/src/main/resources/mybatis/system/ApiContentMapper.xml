@@ -100,4 +100,8 @@
 	<select id="listAllApi" resultType="com.bootdo.system.domain.ApiContentDO">
 		select `api_url`,`api_desc`,`request_mode`,`request_cost` from system_api_content
 	</select>
+	
+	<select id="listAllEnabledUrl" resultType="string">
+		select DISTINCT t.api_url from system_api_content t where t.`status`='1'
+	</select>
 </mapper>

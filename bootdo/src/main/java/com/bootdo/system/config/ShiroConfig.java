@@ -33,7 +33,11 @@ import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import net.sf.ehcache.CacheManager;
 
 /**
- * @author bootdo 1992lcg@163.com
+ * shiro权限配置
+ * @author liy
+ * @date 2019年10月5日 下午10:07:47
+ * @discript 暂不支持缓存
+ *
  */
 @Configuration
 public class ShiroConfig {
@@ -76,17 +80,12 @@ public class ShiroConfig {
 		shiroFilterFactoryBean.setSuccessUrl("/index");
 		shiroFilterFactoryBean.setUnauthorizedUrl("/403");
 		shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainManager.initGetFilterChain());
+		shiroFilterFactoryBean.setFilters(filterChainManager.initGetFilters());
 		return shiroFilterFactoryBean;
 	}
 
 	@Bean
 	public SecurityManager securityManager(RealmManager realmManager) {
-//        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-//        //添加认证域
-//        List<Realm> realms=Arrays.asList(userRealm(),apiInvokeRealm());
-//        securityManager.setRealms(realms);
-//        securityManager.setSessionManager(sessionManager());
-//        return securityManager;
 		DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
 		securityManager.setAuthenticator(new AModularRealmAuthenticator());
 		DefaultSubjectDAO subjectDAO = (DefaultSubjectDAO) securityManager.getSubjectDAO();
@@ -94,12 +93,12 @@ public class ShiroConfig {
 				.getSessionStorageEvaluator();
 		ASubjectFactory subjectFactory = new ASubjectFactory(evaluator);
 		securityManager.setSubjectFactory(subjectFactory);
-		// 自定义缓存实现 使用redis
-		if (Constant.CACHE_TYPE_REDIS.equals(cacheType)) {
-			securityManager.setCacheManager(rediscacheManager());
-		} else {
-			securityManager.setCacheManager(ehCacheManager());
-		}
+//		// 自定义缓存实现 使用redis
+//		if (Constant.CACHE_TYPE_REDIS.equals(cacheType)) {
+//			securityManager.setCacheManager(rediscacheManager());
+//		} else {
+//			securityManager.setCacheManager(ehCacheManager());
+//		}
 		securityManager.setRealms(realmManager.initGetRealm());
 		SecurityUtils.setSecurityManager(securityManager);
 		return securityManager;

@@ -32,4 +32,6 @@ public interface ApiContentService {
 	List<ApiContentDO> listAllApi();
 	
 	Set<String> listAllEnabledUrl();
+	
+	ApiContentDO getApiContent(String url);
 }

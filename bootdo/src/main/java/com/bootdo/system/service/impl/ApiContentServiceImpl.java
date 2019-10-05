@@ -4,6 +4,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -68,6 +69,18 @@ public class ApiContentServiceImpl implements ApiContentService {
 			return new HashSet<String>();
 		}
 		return urlList.stream().collect(Collectors.toSet());
+	}
+
+	@Override
+	public ApiContentDO getApiContent(String url) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("apiUrl", url);
+		map.put("status", 1);
+		List<ApiContentDO> list = list(map);
+		if (CollectionUtils.isEmpty(list)) {
+			return null;
+		}
+		return list.get(0);
 	}
 	
 }

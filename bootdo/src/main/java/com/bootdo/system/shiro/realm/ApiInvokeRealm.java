@@ -60,26 +60,7 @@ public class ApiInvokeRealm extends AuthorizingRealm {
 		if (!ApiUrlConstants.ACCESS_USER_STATUS_ENABLED.equals(String.valueOf(user.getStatus()))) {
 			throw new LockedAccountException("账号已被锁定,请联系平台客服");
 		}
-		// 记录api调用记录
-		ApiContentDO apiContentDO = getApiContent(apiToken.getUrl());
-		if (apiContentDO == null) {
-			throw new AuthenticationException("接口已经禁用");
-		}
-		ApiInvokeRecordService apiInvokeRecordService = ApplicationContextRegister.getBean(ApiInvokeRecordService.class);
-		apiInvokeRecordService.asyncSaveInvokeRecord(clientId, apiContentDO);
 		return new SimpleAuthenticationInfo(user.getClientId(), user.getClientSecret(), user.getUsername());
 	}
 	
-	private ApiContentDO getApiContent(String url) {
-		ApiContentService apiContentService = ApplicationContextRegister.getBean(ApiContentService.class);
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("apiUrl", url);
-		map.put("status", 1);
-		List<ApiContentDO> list = apiContentService.list(map);
-		if (CollectionUtils.isEmpty(list)) {
-			return null;
-		}
-		return list.get(0);
-	}
-
 }

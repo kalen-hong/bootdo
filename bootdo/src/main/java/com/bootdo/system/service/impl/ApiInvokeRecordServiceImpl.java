@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.bootdo.system.dao.ApiInvokeRecordDao;
 import com.bootdo.system.domain.ApiContentDO;
 import com.bootdo.system.domain.ApiInvokeRecord;
+import com.bootdo.system.service.ApiContentService;
 import com.bootdo.system.service.ApiInvokeRecordService;
 
 @Service
@@ -21,9 +22,11 @@ public class ApiInvokeRecordServiceImpl implements ApiInvokeRecordService {
 	protected Logger log = LoggerFactory.getLogger(ApiInvokeRecordServiceImpl.class);
 	protected ExecutorService executors = new ThreadPoolExecutor(3, 30, 3, TimeUnit.MINUTES,
 			new LinkedBlockingQueue<>(1000));
-
 	@Autowired
 	protected ApiInvokeRecordDao apiInvokeRecordDao;
+
+	@Autowired
+	protected ApiContentService apiContentService;
 
 	@Override
 	public void asyncSaveInvokeRecord(String clientId,ApiContentDO apiContentDO) {

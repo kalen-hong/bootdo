@@ -8,8 +8,11 @@ import java.util.Map;
 import javax.servlet.Filter;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
+import com.bootdo.common.redis.shiro.RedisManager;
 import com.bootdo.system.service.ApiContentService;
 import com.bootdo.system.service.ApiInvokeRecordService;
 
@@ -25,12 +28,13 @@ public class ShiroFilterChainManager {
 
 	private final ApiInvokeRecordService apiInvokeRecordService;
 	private final ApiContentService apiContentService;
-
+	private RedisManager redisManager;
 	@Autowired
 	public ShiroFilterChainManager(ApiInvokeRecordService apiInvokeRecordService,
-			ApiContentService apiContentService) {
+			ApiContentService apiContentService,RedisManager redisManager) {
 		this.apiInvokeRecordService = apiInvokeRecordService;
 		this.apiContentService = apiContentService;
+		this.redisManager=redisManager;
 	}
 
 	// 初始化获取过滤链规则
@@ -58,6 +62,7 @@ public class ShiroFilterChainManager {
 		BJwtFilter jwtFilter = new BJwtFilter();
 		jwtFilter.setApiContentService(apiContentService);
 		jwtFilter.setApiInvokeRecordService(apiInvokeRecordService);
+		jwtFilter.setRedisManager(redisManager);
 		filters.put("api", jwtFilter);
 		return filters;
 	}

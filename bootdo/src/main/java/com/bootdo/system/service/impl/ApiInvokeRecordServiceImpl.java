@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.bootdo.system.dao.ApiInvokeRecordDao;
 import com.bootdo.system.domain.ApiContentDO;
-import com.bootdo.system.domain.ApiInvokeRecord;
+import com.bootdo.system.domain.ApiInvokeRecordDO;
 import com.bootdo.system.service.ApiContentService;
 import com.bootdo.system.service.ApiInvokeRecordService;
 
@@ -29,17 +29,17 @@ public class ApiInvokeRecordServiceImpl implements ApiInvokeRecordService {
 	protected ApiContentService apiContentService;
 
 	@Override
-	public void asyncSaveInvokeRecord(String clientId,ApiContentDO apiContentDO) {
+	public void asyncSaveInvokeRecord(ApiInvokeRecordDO record) {
 		try {
-			ApiInvokeRecord record = new ApiInvokeRecord();
-			record.setInterfaceName(apiContentDO.getApiDesc());
-			record.setUrl(apiContentDO.getApiUrl());
+//			record.setInterfaceName(apiContentDO.getApiDesc());
+//			record.setUrl(apiContentDO.getApiUrl());
 			record.setInvokeTime(new Date());
-			record.setClientId(String.valueOf(clientId));
+//			record.setClientId(String.valueOf(clientId));
+//			record.setClientIp(clientIp);
 			executors.execute(new Runnable() {
 				@Override
 				public void run() {
-					apiInvokeRecordDao.insert(record);
+					apiInvokeRecordDao.save(record);
 				}
 			});
 		} catch (Exception e) {

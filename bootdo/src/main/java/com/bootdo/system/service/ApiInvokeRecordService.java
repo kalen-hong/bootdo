@@ -1,7 +1,7 @@
 package com.bootdo.system.service;
 
-import com.bootdo.system.domain.ApiContentDO;
+import com.bootdo.system.domain.ApiInvokeRecordDO;
 
 public interface ApiInvokeRecordService {
-	public void asyncSaveInvokeRecord(String token,ApiContentDO apiContentDO);
+	public void asyncSaveInvokeRecord(ApiInvokeRecordDO record);
 }

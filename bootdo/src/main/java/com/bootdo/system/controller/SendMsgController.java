@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.shiro.ShiroException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 /**
@@ -26,7 +26,7 @@ import io.jsonwebtoken.JwtException;
 public class SendMsgController {
 	protected Logger log=LoggerFactory.getLogger(SendMsgController.class);
 	
-	@GetMapping("/sendMsg")
+	@PostMapping("/sendMsg")
 	public ResponseVo<Map<String, Object>> sendMsg(HttpServletRequest request){
 		try {
 			String accessToken=request.getParameter("accessToken");

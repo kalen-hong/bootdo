@@ -1,25 +1,32 @@
 package com.bootdo.system.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
 
-import com.bootdo.system.domain.ApiInvokeRecord;
+import com.bootdo.system.domain.ApiInvokeRecordDO;
+
 /**
  * 接口调用记录表
+ * 
  * @author liy
- * @email 
+ * @email
  * @date 2019-10-02
  */
 @Mapper
 public interface ApiInvokeRecordDao {
-    int deleteByPrimaryKey(String id);
+	ApiInvokeRecordDO get(Long id);
 
-    int insert(ApiInvokeRecord record);
+	List<ApiInvokeRecordDO> list(Map<String, Object> map);
 
-    int insertSelective(ApiInvokeRecord record);
+	int count(Map<String, Object> map);
 
-    ApiInvokeRecord selectByPrimaryKey(String id);
+	int save(ApiInvokeRecordDO invokeRecord);
 
-    int updateByPrimaryKeySelective(ApiInvokeRecord record);
+	int update(ApiInvokeRecordDO invokeRecord);
 
-    int updateByPrimaryKey(ApiInvokeRecord record);
+	int remove(Long id);
+
+	int batchRemove(Long[] ids);
 }

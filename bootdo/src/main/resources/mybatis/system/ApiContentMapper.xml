@@ -11,7 +11,7 @@
 		select `id`,`api_url`,`api_desc`,`request_mode`,`request_cost`,`status`,`gtm_create`,`gtm_modified` from system_api_content
         <where>  
 		  		  <if test="id != null and id != ''"> and id = #{id} </if>
-		  		  <if test="apiUrl != null and apiUrl != ''"> and api_url = #{apiUrl} </if>
+		  		  <if test="apiUrl != null and apiUrl != ''"> and api_url like '%${apiUrl}%' </if>
 		  		  <if test="apiDesc != null and apiDesc != ''"> and api_desc = #{apiDesc} </if>
 		  		  <if test="requestMode != null and requestMode != ''"> and request_mode = #{requestMode} </if>
 		  		  <if test="requestCost != null and requestCost != ''"> and request_cost = #{requestCost} </if>
@@ -36,7 +36,7 @@
 		select count(*) from system_api_content
 		 <where>  
 		  		  <if test="id != null and id != ''"> and id = #{id} </if>
-		  		  <if test="apiUrl != null and apiUrl != ''"> and api_url = #{apiUrl} </if>
+		  		  <if test="apiUrl != null and apiUrl != ''"> and api_url like '%${apiUrl}%' </if>
 		  		  <if test="apiDesc != null and apiDesc != ''"> and api_desc = #{apiDesc} </if>
 		  		  <if test="requestMode != null and requestMode != ''"> and request_mode = #{requestMode} </if>
 		  		  <if test="requestCost != null and requestCost != ''"> and request_cost = #{requestCost} </if>

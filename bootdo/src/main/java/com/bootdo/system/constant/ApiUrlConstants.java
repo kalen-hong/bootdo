@@ -4,7 +4,7 @@ public class ApiUrlConstants {
 	/**
 	 * token过期时间
 	 */
-	public static final Long TOKEN_EXPIRE_TIME=7200L;
+	public static final Long TOKEN_EXPIRE_TIME=60L;
 	/**
 	 * 拦截的url
 	 */
@@ -15,4 +15,5 @@ public class ApiUrlConstants {
 	public static final String ACCESS_USER_STATUS_ENABLED="1";
 	
 	public static final String API_STATUS_ENABLED="1";
+	
 }

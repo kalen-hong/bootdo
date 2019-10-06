@@ -6,7 +6,10 @@ logging:
 server:
       #端口号
   port: 8888
+  
 spring:
+  cache:
+    type: redis
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.jdbc.Driver

@@ -5,7 +5,6 @@ import static java.util.stream.Collectors.toList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -14,6 +13,8 @@ import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.realm.Realm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.bootdo.system.exception.ApiAuthenticationException;
 
 /* *
  * @Author tomsun28
@@ -61,7 +62,7 @@ public class AModularRealmAuthenticator extends ModularRealmAuthenticator {
 				Throwable t = null;
 				try {
 					info = realm.getAuthenticationInfo(token);
-				}  catch (ShiroException e) {
+				}  catch (ApiAuthenticationException e) {
 					throw e;
 				} catch (Throwable throwable) {
 					t = throwable;

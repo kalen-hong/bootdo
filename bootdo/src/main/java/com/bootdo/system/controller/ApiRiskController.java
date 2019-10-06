@@ -6,7 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +30,7 @@ public class ApiRiskController {
 	@Autowired
 	protected ApiContentService apiContentService;
 	
-	@GetMapping("/listOpenApi")
+	@PostMapping("/listOpenApi")
 	public ResponseVo<List<ApiContentDO>> listOpenApi(@RequestParam("accessToken")String accessToken,@RequestParam("timestamp")String timestamp,@RequestParam("sign")String sign){
 		log.info("查询所有的风控接口入参accessToken【"+accessToken+"】，timestamp【"+timestamp+"】，sign【"+sign+"】");
 		if(StringUtils.isEmpty(accessToken)||StringUtils.isEmpty(timestamp)||StringUtils.isEmpty(sign)) {
@@ -39,9 +39,10 @@ public class ApiRiskController {
 		//MD5验签
 		String md5Param=new StringBuffer(accessToken).append(timestamp).toString();
 		if(!sign.equals(MD5Util.md5(md5Param))) {
-			return new ResponseVo<List<ApiContentDO>>(ResponseVo.FAIL, "参数验签失败", null);
+			return new ResponseVo<List<ApiContentDO>>(ResponseVo.FAIL, "签名错误", null);
 		}
 		List<ApiContentDO> list=apiContentService.listAllApi();
+		//转成map
 		return new ResponseVo<List<ApiContentDO>>(ResponseVo.SUCCESS, "success", list);
 	}
 }

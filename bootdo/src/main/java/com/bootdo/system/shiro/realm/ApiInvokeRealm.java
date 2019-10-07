@@ -14,7 +14,7 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 
 import com.bootdo.common.config.ApplicationContextRegister;
-import com.bootdo.system.constant.ApiUrlConstants;
+import com.bootdo.system.constant.ApiConstants;
 import com.bootdo.system.domain.UserBusinessDO;
 import com.bootdo.system.exception.ApiAuthenticationException;
 import com.bootdo.system.service.ApiContentService;
@@ -36,7 +36,7 @@ public class ApiInvokeRealm extends AuthorizingRealm {
 		// 返回用户能看到禁用的所有url
 		ApiContentService apiContentService = ApplicationContextRegister.getBean(ApiContentService.class);
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("status", ApiUrlConstants.API_STATUS_ENABLED);
+		map.put("status", ApiConstants.API_STATUS_ENABLED);
 		Set<String> urlSet = apiContentService.listAllEnabledUrl();
 		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 		info.setStringPermissions(urlSet);
@@ -52,7 +52,7 @@ public class ApiInvokeRealm extends AuthorizingRealm {
 		if (user == null) {
 			throw new ApiAuthenticationException("账号不存在");
 		}
-		if (!ApiUrlConstants.ACCESS_USER_STATUS_ENABLED.equals(String.valueOf(user.getStatus()))) {
+		if (!ApiConstants.ACCESS_USER_STATUS_ENABLED.equals(String.valueOf(user.getStatus()))) {
 			throw new ApiAuthenticationException("账号已被锁定,请联系平台客服");
 		}
 		return new SimpleAuthenticationInfo(user.getClientId(), user.getClientSecret(), user.getUsername());

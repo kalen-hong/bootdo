@@ -49,8 +49,8 @@ public class MD5Util {
     }
     
     public static void main(String[] args) {
-		String tokenString="eyJhbGciOiJIUzUxMiIsInppcCI6IkRFRiJ9.eNosi9EKwyAMAP8lzw2YGFH7N8pSsIVuNG4MRv99Fvp4x90P1t5gBsehSmKPS6aCkopgfeQFOYboHCvHHGECe9cRd7U-oJld8Nx0R9Pjo8clS4eZxuTHIjSBfl-38IGEzj8AAAD__w.DnqoNpCfJMYLqb9rdJb48re_vqg3kVdUobwxWb2T6XDOoWR0hlMhIaCzs60nQIFYKGMPk5R8dmF_AU2Vtwwpgw";
-		String timestamp="2019-10-06 10:17:12";
+		String tokenString="eyJhbGciOiJIUzUxMiIsInppcCI6IkRFRiJ9.eNosytEKgzAMQNF_ybMBa2Lb-De2plAH2zDdEMb-XQUf7-H-YG0VJlhiGWgOGUmyQ04cUUQy9lykDEtUZYIO7JPOuam1M6rZFa-HPtF0--p24dxgcmPomSSQ70D39w3shfz_AAAA__8.zPaABx5D_K8FlrDVAyV4FIX1PH0DgLjX_3-CkTJBlGL05qQ8bl8JYOwYbJwKoBq32CghTXWSWVIuH8mY4Asmag";
+		String timestamp="2019-10-07 10:17:12";
 		System.out.println(md5(tokenString+timestamp));
 	}
 

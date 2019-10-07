@@ -1,9 +1,9 @@
 package com.bootdo.system.shiro.filter;
 
-import org.apache.shiro.web.filter.AccessControlFilter;
-
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+
+import org.apache.shiro.web.filter.AccessControlFilter;
 
 /**
  * 登陆密码过滤器
@@ -13,7 +13,6 @@ import javax.servlet.ServletResponse;
  *
  */
 public class PasswordFilter extends AccessControlFilter {
-
 	@Override
 	protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
 		return true;

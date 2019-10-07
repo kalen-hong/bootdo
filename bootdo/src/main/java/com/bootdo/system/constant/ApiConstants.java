@@ -1,10 +1,10 @@
 package com.bootdo.system.constant;
 
-public class ApiUrlConstants {
+public class ApiConstants {
 	/**
 	 * token过期时间
 	 */
-	public static final Long TOKEN_EXPIRE_TIME=60L;
+	public static final Long TOKEN_EXPIRE_TIME=7200L;
 	/**
 	 * 拦截的url
 	 */

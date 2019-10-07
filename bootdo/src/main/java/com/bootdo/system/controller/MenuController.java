@@ -116,6 +116,7 @@ public class MenuController extends BaseController {
 
 	@GetMapping("/tree")
 	@ResponseBody
+	@RequiresPermissions("sys:menu:tree")
 	Tree<MenuDO> tree() {
 		Tree<MenuDO>  tree = menuService.getTree();
 		return tree;

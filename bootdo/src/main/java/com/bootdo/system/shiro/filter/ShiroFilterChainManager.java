@@ -8,8 +8,6 @@ import java.util.Map;
 import javax.servlet.Filter;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import com.bootdo.common.redis.shiro.RedisManager;
@@ -47,8 +45,8 @@ public class ShiroFilterChainManager {
 		// 登陆退出
 		filterChain.put("/logout", "logout");
 		// -------------auth 默认需要认证过滤器的URL，后台管理系统
-		List<String> defalutAuth = Arrays.asList("/activiti/**", "/blog/**", "/common/**", "/oa/**", "/system/**");
-		defalutAuth.forEach(auth -> filterChain.put(auth, "anon"));
+		List<String> defalutAuth = Arrays.asList("/activiti/**", "/blog/**", "/common/**", "/oa/**","/sys/**", "/system/**");
+		defalutAuth.forEach(auth -> filterChain.put(auth, "auth"));
 		List<String> apiAuth = Arrays.asList("/api/**");
 		apiAuth.forEach(auth -> filterChain.put(auth, "api"));
 		return filterChain;
@@ -59,7 +57,7 @@ public class ShiroFilterChainManager {
 		Map<String, Filter> filters = new LinkedHashMap<>();
 		PasswordFilter passwordFilter = new PasswordFilter();
 		filters.put("auth", passwordFilter);
-		BJwtFilter jwtFilter = new BJwtFilter();
+		ApiInvokeFilter jwtFilter = new ApiInvokeFilter();
 		jwtFilter.setApiContentService(apiContentService);
 		jwtFilter.setApiInvokeRecordService(apiInvokeRecordService);
 		jwtFilter.setRedisManager(redisManager);

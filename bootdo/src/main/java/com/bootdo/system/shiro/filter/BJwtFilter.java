@@ -148,9 +148,6 @@ public class BJwtFilter extends BPathMatchingFilter {
 		HttpServletRequest req = (HttpServletRequest) request;
 		String url = req.getRequestURL().toString();
 		JwtAccount jwt = JsonWebTokenUtil.parseJwt(token, JsonWebTokenUtil.SECRET_KEY);
-		if (new Date().after(jwt.getExpiration())) {
-			throw new ApiAuthenticationException("token已过期");
-		}
 		return new ApiInvokeToken(jwt.getAppId(), token, url);
 	}
 

@@ -56,12 +56,9 @@
 			`id`, 
 			`client_id`, 
 			`client_secret`, 
-			`userName`, 
-			`sex`, 
-			`mobile`, 
-			`status`, 
-			`note`, 
-			`gmt_create`, 
+			`userName`,
+			`status`,
+			`gmt_create`,
 			`gmt_modified`
 		)
 		values
@@ -70,11 +67,8 @@
 			#{clientId}, 
 			#{clientSecret}, 
 			#{username}, 
-			#{sex}, 
-			#{mobile}, 
-			#{status}, 
-			#{note}, 
-			#{gmtCreate}, 
+			#{status},
+			#{gmtCreate},
 			#{gmtModified}
 		)
 	</insert>

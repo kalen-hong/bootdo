@@ -63,7 +63,7 @@ function load() {
 									field : 'username', 
 									title : '用户名' 
 								},
-																{
+															/*	{
 									field : 'sex', 
 									title : '性别',
 																	align : 'center',
@@ -80,7 +80,7 @@ function load() {
 																{
 									field : 'mobile', 
 									title : '手机号' 
-								},
+								},*/
 																{
 									field : 'status', 
 									title : '状态 ',
@@ -92,11 +92,11 @@ function load() {
 																			return '<span class="label label-primary">正常</span>';
 																		}
 																	}
-								},
+								},/*
 																{
 									field : 'note', 
 									title : '用户备注' 
-								},
+								},*/
 																{
 									field : 'gmtCreate', 
 									title : '创建时间' 

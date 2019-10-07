@@ -23,10 +23,10 @@ public class BlogController {
 	@Autowired
     ContentService bContentService;
 
-	@GetMapping()
+	/*@GetMapping()
 	String blog() {
 		return "blog/index/main";
-	}
+	}*/
 
 	@ResponseBody
 	@GetMapping("/open/list")

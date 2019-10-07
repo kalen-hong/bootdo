@@ -1234,4 +1234,17 @@ CREATE TABLE `system_api_content` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='api业务内容表';
 
 
-c
+
+CREATE TABLE `system_user_business` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `client_id` varchar (255) DEFAULT '' NOT NULL COMMENT '用户账号',
+  `client_secret` varchar (255) DEFAULT '' NOT NULL COMMENT '用户密码',
+  `userName` varchar(20) DEFAULT '' NOT NULL COMMENT '用户名',
+  `sex` int(1) DEFAULT '0' NOT NULL COMMENT '状态，1男 2女 0未知',
+  `mobile` varchar(50) DEFAULT '' NOT NULL COMMENT '手机号',
+  `status` tinyint(255) DEFAULT '1' NOT NULL COMMENT '状态 0:禁用，1:正常',
+  `note` varchar(200) DEFAULT '' NOT NULL COMMENT '用户备注',
+  `gmt_create` datetime DEFAULT NULL COMMENT '创建时间',
+  `gmt_modified` datetime DEFAULT NULL COMMENT '修改时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='业务用户表';

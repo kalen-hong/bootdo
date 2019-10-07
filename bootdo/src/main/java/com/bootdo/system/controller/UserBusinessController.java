@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.bootdo.common.utils.MD5Utils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -76,6 +77,7 @@ public class UserBusinessController extends BaseController {
 	@RequiresPermissions("system:userBusiness:add")
 	public R save( UserBusinessDO userBusiness){
 		userBusiness.setGmtCreate(new Date());
+		userBusiness.setClientSecret(MD5Utils.generatePassword(10));
 		if(userBusinessService.save(userBusiness)>0){
 			return R.ok();
 		}
@@ -88,6 +90,7 @@ public class UserBusinessController extends BaseController {
 	@RequestMapping("/update")
 	@RequiresPermissions("system:userBusiness:edit")
 	public R update( UserBusinessDO userBusiness){
+		userBusiness.setGmtModified(new Date());
 		userBusinessService.update(userBusiness);
 		return R.ok();
 	}

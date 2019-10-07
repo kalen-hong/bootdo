@@ -1,14 +1,11 @@
 package com.bootdo.system.shiro.filter;
 
-import java.util.Date;
-
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
@@ -41,9 +38,9 @@ import io.jsonwebtoken.SignatureException;
  * @discript
  *
  */
-public class BJwtFilter extends BPathMatchingFilter {
+public class ApiInvokeFilter extends AbstractPathMatchingFilter {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(BJwtFilter.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ApiInvokeFilter.class);
 
 	private ApiInvokeRecordService apiInvokeRecordService;
 
@@ -72,10 +69,15 @@ public class BJwtFilter extends BPathMatchingFilter {
 					RequestResponseUtil.responseWrite(JSON.toJSONString(responseVo), servletResponse);
 					return false;
 				}
+				// 接口调用redis计数--断路限流
+				String clientId=JsonWebTokenUtil.parseJwt(accessToken, JsonWebTokenUtil.SECRET_KEY).getAppId();
+				if(apiInvokeIsNeedLimit(clientId, String.valueOf(apiContentDO.getId()))) {
+					ResponseVo<String> responseVo = new ResponseVo<String>(ResponseVo.FAIL, "接口调用频繁，本次请求被拒", null);
+					RequestResponseUtil.responseWrite(JSON.toJSONString(responseVo), servletResponse);
+					return false;
+				}
 				asyncSaveInvokeRecord(url, apiContentDO.getApiDesc(), accessToken, servletRequest);
 			}
-			// 接口调用redis计数--断路限流
-			
 			return success;
 		}
 		// 请求未携带token 判断为无效请求
@@ -88,9 +90,12 @@ public class BJwtFilter extends BPathMatchingFilter {
 			ServletResponse servletResponse) {
 		String exceptionMsg="";
 		try {
-			AuthenticationToken token = createApiInvokeToken(servletRequest);
+			ApiInvokeToken token = createApiInvokeToken(servletRequest);
 			subject.login(token);
-			return true;
+			if(latestToken(token.getJwt(), token.getAppId())) {
+				return true;
+			}
+			exceptionMsg="请传入最新获取的的token";
 		} catch (ApiAuthenticationException e) {
 			exceptionMsg=e.getMessage();
 		} catch (ExpiredJwtException e) {
@@ -107,6 +112,20 @@ public class BJwtFilter extends BPathMatchingFilter {
 		ResponseVo<String> responseVo = new ResponseVo<String>(ResponseVo.FAIL, exceptionMsg, null);
 		RequestResponseUtil.responseWrite(JSON.toJSONString(responseVo), servletResponse);
 		return false;
+	}
+	
+	private boolean latestToken(String token,String clientId) {
+		try {
+			String key=String.format(RedisConstants.CLIENT_TOKEN, clientId);
+			String cacheToken=redisManager.get(key);
+			if(StringUtils.isEmpty(cacheToken)) {
+				return true;
+			}
+			return cacheToken.equals(token);
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage(),e);
+			return true;
+		}
 	}
 
 	private void asyncSaveInvokeRecord(String url, String interfaceName, String accessToken,
@@ -143,7 +162,7 @@ public class BJwtFilter extends BPathMatchingFilter {
 		return false;
 	}
 
-	private AuthenticationToken createApiInvokeToken(ServletRequest request) {
+	private ApiInvokeToken createApiInvokeToken(ServletRequest request) {
 		String token = request.getParameter("accessToken");
 		HttpServletRequest req = (HttpServletRequest) request;
 		String url = req.getRequestURL().toString();
@@ -177,18 +196,30 @@ public class BJwtFilter extends BPathMatchingFilter {
 	}
 	
 	/**
-	 * 是否频繁调用第三方接口(限制：针对同一接口,3秒之内只允许请求3次)
+	 * api调用是否需要限制(针对同一接口,3秒之内只允许请求3次)
 	 * @param clientId
 	 * @param apiUrlId
 	 * @return
 	 */
-	private boolean callOverrun(String clientId,String apiUrlId) {
+	private boolean apiInvokeIsNeedLimit(String clientId,String apiUrlId) {
 		try {
 			String key=String.format(RedisConstants.API_INVOKE_COUNTER, clientId,apiUrlId);
-			return false;
+			long singleApiInvokeNum=redisManager.incr(key, 1);
+			apiInvokeCounterSetExpire(key);
+			return singleApiInvokeNum>RedisConstants.API_INVOKE_LIMIT;
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(),e);
 			return false;
+		}
+	}
+	
+	private void apiInvokeCounterSetExpire(String key) {
+		try {
+			if(!redisManager.exist(key)) {
+				redisManager.expire(key, RedisConstants.API_INVOKE_COUNTER_EXPIRETIME);
+			}
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage(),e);
 		}
 	}
 }

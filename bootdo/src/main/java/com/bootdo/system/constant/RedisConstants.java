@@ -12,9 +12,13 @@ public class RedisConstants {
 	 */
 	public static final String API_INVOKE_COUNTER="openapi:api_invoke_counter:%s:%s";
 	/**
+	 * 缓存客户端token信息：clientId
+	 */
+	public static final String CLIENT_TOKEN="openapi:client_token:%s";
+	/**
 	 * api调用计数器：redis过期时间(秒)
 	 */
-	public static final Integer API_INVOKE_COUNTER_EXPIRETIME=3;
+	public static final Integer API_INVOKE_COUNTER_EXPIRETIME=10;
 	/**
 	 * api调用计数器：限制次数
 	 */

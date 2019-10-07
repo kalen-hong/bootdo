@@ -1,9 +1,14 @@
 package com.bootdo.system.shiro.filter;
 
 import org.apache.shiro.web.filter.AccessControlFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.alibaba.fastjson.JSON;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 登陆密码过滤器
@@ -13,9 +18,11 @@ import javax.servlet.ServletResponse;
  *
  */
 public class PasswordFilter extends AccessControlFilter {
-
+	private static final Logger log = LoggerFactory.getLogger(PasswordFilter.class);
 	@Override
 	protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
+		String path=((HttpServletRequest)request).getServletPath();
+		log.info("【"+path+"】请求参数："+JSON.toJSONString(request.getParameterMap()));
 		return true;
 	}
 

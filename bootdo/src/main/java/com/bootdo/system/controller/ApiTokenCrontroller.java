@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bootdo.system.constant.ApiUrlConstants;
+import com.bootdo.common.redis.shiro.RedisManager;
+import com.bootdo.system.constant.ApiConstants;
+import com.bootdo.system.constant.RedisConstants;
 import com.bootdo.system.domain.UserBusinessDO;
 import com.bootdo.system.exception.ApiAuthenticationException;
 import com.bootdo.system.service.UserBusinessService;
@@ -38,6 +40,8 @@ public class ApiTokenCrontroller {
 	protected Logger log = LoggerFactory.getLogger(ApiTokenCrontroller.class);
 	@Autowired
 	private UserBusinessService userBusinessService;
+	@Autowired
+	protected RedisManager redisManager;
 
 	@PostMapping("/getToken")
 	public ResponseVo<Map<String, Object>> getToken(@RequestParam("clientId") String clientId,
@@ -49,10 +53,11 @@ public class ApiTokenCrontroller {
 				return new ResponseVo<Map<String, Object>>(ResponseVo.FAIL, "密钥错误", null);
 			}
 			String token = JsonWebTokenUtil.issueJWT(UUID.randomUUID().toString(), clientId, "token-server",
-					ApiUrlConstants.TOKEN_EXPIRE_TIME, null, SignatureAlgorithm.HS512);
+					ApiConstants.TOKEN_EXPIRE_TIME, null, SignatureAlgorithm.HS512);
+			saveTokenToRedis(clientId, token);
 			Map<String, Object> data = new HashMap<String, Object>();
 			data.put("accessToken", token);
-			data.put("expiresIn", ApiUrlConstants.TOKEN_EXPIRE_TIME);
+			data.put("expiresIn", ApiConstants.TOKEN_EXPIRE_TIME);
 			return new ResponseVo<Map<String, Object>>(ResponseVo.SUCCESS, "success", data);
 		} catch (ApiAuthenticationException e) {
 			return new ResponseVo<Map<String, Object>>(ResponseVo.FAIL, e.getMessage(), null);
@@ -68,17 +73,30 @@ public class ApiTokenCrontroller {
 		if (CollectionUtils.isEmpty(list)) {
 			throw new ApiAuthenticationException("用户不存在");
 		}
+		if(!ApiConstants.ACCESS_USER_STATUS_ENABLED.equals(String.valueOf(list.get(0).getStatus()))) {
+			throw new ApiAuthenticationException("账号已被锁定,请联系平台客服");
+		}
 		return clientSecret.equals(list.get(0).getClientSecret());
+	}
+	
+	private void saveTokenToRedis(String clientId,String token) {
+		try {
+			String key=String.format(RedisConstants.CLIENT_TOKEN, clientId);
+			redisManager.set(key.getBytes(), token.getBytes(), ApiConstants.TOKEN_EXPIRE_TIME.intValue());
+		} catch (Exception e) {
+			log.error(e.getMessage(),e);
+		}
 	}
 
 	@PostMapping("/refreshToken")
 	public ResponseVo<Map<String, Object>> refreshToken(@RequestParam("accessToken") String accessToken) {
 		JwtAccount jwtAccount = JsonWebTokenUtil.parseJwt(accessToken, JsonWebTokenUtil.SECRET_KEY);
 		String token = JsonWebTokenUtil.issueJWT(UUID.randomUUID().toString(), String.valueOf(jwtAccount.getAppId()),
-				"token-server", ApiUrlConstants.TOKEN_EXPIRE_TIME, null, SignatureAlgorithm.HS512);
+				"token-server", ApiConstants.TOKEN_EXPIRE_TIME, null, SignatureAlgorithm.HS512);
+		saveTokenToRedis(jwtAccount.getAppId(), token);
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("accessToken", token);
-		data.put("expiresIn", ApiUrlConstants.TOKEN_EXPIRE_TIME);
+		data.put("expiresIn", ApiConstants.TOKEN_EXPIRE_TIME);
 		return new ResponseVo<Map<String, Object>>("0", "success", data);
 	}
 

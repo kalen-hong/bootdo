@@ -1,34 +1,38 @@
 package com.bootdo.system.controller;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.bootdo.common.annotation.Log;
 import com.bootdo.common.config.Constant;
 import com.bootdo.common.controller.BaseController;
-import com.bootdo.common.domain.FileDO;
 import com.bootdo.common.domain.Tree;
 import com.bootdo.common.service.DictService;
-import com.bootdo.common.utils.*;
+import com.bootdo.common.utils.MD5Utils;
+import com.bootdo.common.utils.PageUtils;
+import com.bootdo.common.utils.Query;
+import com.bootdo.common.utils.R;
 import com.bootdo.system.domain.DeptDO;
 import com.bootdo.system.domain.RoleDO;
 import com.bootdo.system.domain.UserDO;
 import com.bootdo.system.service.RoleService;
 import com.bootdo.system.service.UserService;
 import com.bootdo.system.vo.UserVO;
-import javax.servlet.http.HttpServletRequest;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @RequestMapping("/sys/user")
 @Controller
@@ -45,7 +49,8 @@ public class UserController extends BaseController {
 	String user(Model model) {
 		return prefix + "/user";
 	}
-
+	
+	@RequiresPermissions("sys:user:list")
 	@GetMapping("/list")
 	@ResponseBody
 	PageUtils list(@RequestParam Map<String, Object> params) {
@@ -200,6 +205,7 @@ public class UserController extends BaseController {
 		}
 
 	}
+	@RequiresPermissions("sys:user:tree")
 	@GetMapping("/tree")
 	@ResponseBody
 	public Tree<DeptDO> tree() {
@@ -208,11 +214,13 @@ public class UserController extends BaseController {
 		return tree;
 	}
 
+	@RequiresPermissions("sys:user:treeView")
 	@GetMapping("/treeView")
 	String treeView() {
 		return  prefix + "/userTree";
 	}
 
+	@RequiresPermissions("sys:user:personal")
 	@GetMapping("/personal")
 	String personal(Model model) {
 		UserDO userDO  = userService.get(getUserId());
@@ -221,6 +229,7 @@ public class UserController extends BaseController {
 		model.addAttribute("sexList",dictService.getSexList());
 		return prefix + "/personal";
 	}
+	@RequiresPermissions("sys:user:uploadImg")
 	@ResponseBody
 	@PostMapping("/uploadImg")
 	R uploadImg(@RequestParam("avatar_file") MultipartFile file, String avatar_data, HttpServletRequest request) {

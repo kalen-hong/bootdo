@@ -6,7 +6,7 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.springframework.util.StringUtils;
 
-import com.bootdo.system.constant.ApiUrlConstants;
+import com.bootdo.system.constant.ApiConstants;
 import com.bootdo.system.vo.JwtAccount;
 
 import io.jsonwebtoken.Claims;
@@ -104,7 +104,7 @@ public class JsonWebTokenUtil {
 	}
 
 	public static void main(String[] args) {
-		String token=issueJWT(String.valueOf("1"), "test", "openapi", ApiUrlConstants.TOKEN_EXPIRE_TIME, null, SignatureAlgorithm.HS256);
+		String token=issueJWT(String.valueOf("1"), "test", "openapi", ApiConstants.TOKEN_EXPIRE_TIME, null, SignatureAlgorithm.HS256);
 		System.out.println(token);
 	}
 

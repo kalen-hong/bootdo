@@ -3,6 +3,7 @@ package com.bootdo.system.controller;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,18 +22,21 @@ import com.bootdo.system.service.SessionService;
 public class SessionController {
 	@Autowired
 	SessionService sessionService;
-
+	
+	@RequiresPermissions("sys:online:user")
 	@GetMapping()
 	public String online() {
 		return "system/online/online";
 	}
 
+	@RequiresPermissions("sys:online:list")
 	@ResponseBody
 	@RequestMapping("/list")
 	public List<UserOnline> list() {
 		return sessionService.list();
 	}
 
+	@RequiresPermissions("sys:online:forceLogout")
 	@ResponseBody
 	@RequestMapping("/forceLogout/{sessionId}")
 	public R forceLogout(@PathVariable("sessionId") String sessionId, RedirectAttributes redirectAttributes) {
@@ -45,7 +49,8 @@ public class SessionController {
 		}
 
 	}
-
+	
+	@RequiresPermissions("sys:online:sessionList")
 	@ResponseBody
 	@RequestMapping("/sessionList")
 	public Collection<Session> sessionList() {

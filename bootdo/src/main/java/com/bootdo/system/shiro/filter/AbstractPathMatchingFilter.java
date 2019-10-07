@@ -15,9 +15,9 @@ import org.apache.shiro.web.util.WebUtils;
  * @discript
  *
  */
-public abstract class BPathMatchingFilter extends AccessControlFilter {
+public abstract class AbstractPathMatchingFilter extends AccessControlFilter {
 
-    public BPathMatchingFilter() {
+    public AbstractPathMatchingFilter() {
 
     }
 

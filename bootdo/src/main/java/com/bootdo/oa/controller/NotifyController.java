@@ -158,7 +158,8 @@ public class NotifyController extends BaseController {
 	String selefNotify() {
 		return "oa/notify/selfNotify";
 	}
-
+	
+	@RequiresPermissions("oa:notify:selfList")
 	@ResponseBody
 	@GetMapping("/selfList")
 	PageUtils selfList(@RequestParam Map<String, Object> params) {

@@ -104,7 +104,7 @@ public class JsonWebTokenUtil {
 	}
 
 	public static void main(String[] args) {
-		String token=issueJWT(String.valueOf("1"), "test", "openapi", ApiConstants.TOKEN_EXPIRE_TIME, null, SignatureAlgorithm.HS256);
+		String token=issueJWT(String.valueOf("1"), "test", ApiConstants.TOKEN_ISSUER, ApiConstants.TOKEN_EXPIRE_TIME, null, SignatureAlgorithm.HS256);
 		System.out.println(token);
 	}
 

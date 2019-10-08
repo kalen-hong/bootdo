@@ -76,7 +76,7 @@ public class ApiInvokeFilter extends AbstractPathMatchingFilter {
 					RequestResponseUtil.responseWrite(JSON.toJSONString(responseVo), servletResponse);
 					return false;
 				}
-				asyncSaveInvokeRecord(url, apiContentDO.getApiDesc(), accessToken, servletRequest);
+				asyncSaveInvokeRecord(url, apiContentDO.getApiDesc(), clientId, servletRequest);
 			}
 			return success;
 		}
@@ -128,10 +128,9 @@ public class ApiInvokeFilter extends AbstractPathMatchingFilter {
 		}
 	}
 
-	private void asyncSaveInvokeRecord(String url, String interfaceName, String accessToken,
+	private void asyncSaveInvokeRecord(String url, String interfaceName, String clientId,
 			ServletRequest servletRequest) {
 		try {
-			String clientId = JsonWebTokenUtil.parseJwt(accessToken, JsonWebTokenUtil.SECRET_KEY).getAppId();
 			String clientIp = IPUtils.getIpAddr((HttpServletRequest) servletRequest);
 			ApiInvokeRecordDO record = new ApiInvokeRecordDO();
 			record.setClientId(clientId);

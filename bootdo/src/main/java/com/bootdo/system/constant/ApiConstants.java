@@ -16,4 +16,6 @@ public class ApiConstants {
 	
 	public static final String API_STATUS_ENABLED="1";
 	
+	public static final String TOKEN_ISSUER="openapi";
+	
 }

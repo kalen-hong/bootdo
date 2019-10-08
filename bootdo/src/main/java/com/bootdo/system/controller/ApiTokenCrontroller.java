@@ -52,7 +52,7 @@ public class ApiTokenCrontroller {
 			if (!checkClientSecret(clientId, clientSecret)) {
 				return new ResponseVo<Map<String, Object>>(ResponseVo.FAIL, "密钥错误", null);
 			}
-			String token = JsonWebTokenUtil.issueJWT(UUID.randomUUID().toString(), clientId, "token-server",
+			String token = JsonWebTokenUtil.issueJWT(UUID.randomUUID().toString(), clientId, ApiConstants.TOKEN_ISSUER,
 					ApiConstants.TOKEN_EXPIRE_TIME, null, SignatureAlgorithm.HS512);
 			saveTokenToRedis(clientId, token);
 			Map<String, Object> data = new HashMap<String, Object>();
@@ -92,7 +92,7 @@ public class ApiTokenCrontroller {
 	public ResponseVo<Map<String, Object>> refreshToken(@RequestParam("accessToken") String accessToken) {
 		JwtAccount jwtAccount = JsonWebTokenUtil.parseJwt(accessToken, JsonWebTokenUtil.SECRET_KEY);
 		String token = JsonWebTokenUtil.issueJWT(UUID.randomUUID().toString(), String.valueOf(jwtAccount.getAppId()),
-				"token-server", ApiConstants.TOKEN_EXPIRE_TIME, null, SignatureAlgorithm.HS512);
+				ApiConstants.TOKEN_ISSUER, ApiConstants.TOKEN_EXPIRE_TIME, null, SignatureAlgorithm.HS512);
 		saveTokenToRedis(jwtAccount.getAppId(), token);
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("accessToken", token);

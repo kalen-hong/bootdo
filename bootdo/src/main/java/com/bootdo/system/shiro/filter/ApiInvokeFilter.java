@@ -72,7 +72,7 @@ public class ApiInvokeFilter extends AbstractPathMatchingFilter {
 				// 接口调用redis计数--断路限流
 				String clientId=JsonWebTokenUtil.parseJwt(accessToken, JsonWebTokenUtil.SECRET_KEY).getAppId();
 				if(apiInvokeIsNeedLimit(clientId, String.valueOf(apiContentDO.getId()))) {
-					ResponseVo<String> responseVo = new ResponseVo<String>(ResponseVo.FAIL, "接口调用频繁，本次请求被拒", null);
+					ResponseVo<String> responseVo = new ResponseVo<String>(ResponseVo.FAIL, "接口调用频繁，请稍后再试", null);
 					RequestResponseUtil.responseWrite(JSON.toJSONString(responseVo), servletResponse);
 					return false;
 				}

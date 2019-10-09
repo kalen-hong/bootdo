@@ -75,7 +75,6 @@ public class ApiContentServiceImpl implements ApiContentService {
 	public ApiContentDO getApiContent(String url) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("apiUrl", url);
-		map.put("status", 1);
 		List<ApiContentDO> list = list(map);
 		if (CollectionUtils.isEmpty(list)) {
 			return null;

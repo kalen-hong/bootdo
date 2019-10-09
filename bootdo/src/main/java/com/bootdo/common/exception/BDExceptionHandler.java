@@ -19,9 +19,9 @@ import com.bootdo.common.utils.R;
  */
 @RestControllerAdvice
 public class BDExceptionHandler {
-    private Logger logger = LoggerFactory.getLogger(getClass());
-    @Autowired
-    LogService logService;
+	private Logger logger = LoggerFactory.getLogger(getClass());
+	@Autowired
+	LogService logService;
 //
 //    /**
 //     * 自定义异常
@@ -47,22 +47,29 @@ public class BDExceptionHandler {
 //        return R.error(404, "没找找到页面");
 //    }
 
-    @ExceptionHandler(AuthorizationException.class)
-    public Object handleAuthorizationException(AuthorizationException e, HttpServletRequest request) {
-        logger.error(e.getMessage(), e);
-        if (HttpServletUtils.jsAjax(request)) {
-            return R.error(403, "未授权");
-        }
-        return new ModelAndView("error/403");
-    }
+	@ExceptionHandler(AuthorizationException.class)
+	public Object handleAuthorizationException(AuthorizationException e, HttpServletRequest request) {
+		logger.error(e.getMessage(), e);
+		if (HttpServletUtils.jsAjax(request)) {
+			return R.error(403, "未授权");
+		}
+		if (skipLogin(e)) {
+			return new ModelAndView("login");
+		}
+		return new ModelAndView("error/403");
+	}
 
+	private boolean skipLogin(AuthorizationException e) {
+		return e.getMessage().contains("invalid-request") || e.getMessage().contains("This subject is anonymous");
+	}
 
-    @ExceptionHandler({Exception.class})
-    public Object handleException(Exception e, HttpServletRequest request) {
-        logger.error(e.getMessage(), e);
-        if (HttpServletUtils.jsAjax(request)) {
-            return R.error(500, "服务器错误，请联系管理员");
-        }
-        return new ModelAndView("error/500");
-    }
+	@ExceptionHandler({ Exception.class })
+	public Object handleException(Exception e, HttpServletRequest request) {
+		logger.error(e.getMessage(), e);
+		if (HttpServletUtils.jsAjax(request)) {
+			return R.error(500, "服务器错误，请联系管理员");
+		}
+//		return new ModelAndView("error/500");
+		return new ModelAndView("login");
+	}
 }

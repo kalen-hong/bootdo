@@ -1,5 +1,7 @@
 package com.bootdo.system.shiro.filter;
 
+import java.io.IOException;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
@@ -14,7 +16,7 @@ import org.apache.shiro.web.filter.AccessControlFilter;
  */
 public class PasswordFilter extends AccessControlFilter {
 	@Override
-	protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
+	protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws IOException {
 		return true;
 	}
 

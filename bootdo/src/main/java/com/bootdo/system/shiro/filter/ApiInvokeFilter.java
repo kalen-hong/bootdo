@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSON;
 import com.bootdo.common.redis.shiro.RedisManager;
 import com.bootdo.common.utils.IPUtils;
+import com.bootdo.system.constant.ApiConstants;
 import com.bootdo.system.constant.RedisConstants;
 import com.bootdo.system.domain.ApiContentDO;
 import com.bootdo.system.domain.ApiInvokeRecordDO;
@@ -65,6 +66,10 @@ public class ApiInvokeFilter extends AbstractPathMatchingFilter {
 				ApiContentDO apiContentDO = apiContentService.getApiContent(url);
 				// 校验api接口是否禁用
 				if (apiContentDO == null) {
+					ResponseVo<String> responseVo = new ResponseVo<String>(ResponseVo.FAIL, "接口不存在", null);
+					RequestResponseUtil.responseWrite(JSON.toJSONString(responseVo), servletResponse);
+					return false;
+				}else if(!ApiConstants.API_STATUS_ENABLED.equals(String.valueOf(apiContentDO.getStatus()))) {
 					ResponseVo<String> responseVo = new ResponseVo<String>(ResponseVo.FAIL, "接口已被禁用", null);
 					RequestResponseUtil.responseWrite(JSON.toJSONString(responseVo), servletResponse);
 					return false;

@@ -29,4 +29,6 @@ public interface UserBusinessService {
 	int batchRemove(Long[] ids);
 	
 	UserBusinessDO getByClientId(String clientId);
+
+	boolean exit(Map<String, Object> params);
 }

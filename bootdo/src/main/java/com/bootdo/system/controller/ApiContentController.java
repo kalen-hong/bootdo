@@ -120,6 +120,15 @@ public class ApiContentController extends BaseController {
 		apiContentService.batchRemove(ids);
 		return R.ok();
 	}
-	
-	
+
+
+
+	@PostMapping("/exit")
+	@ResponseBody
+	boolean exit(@RequestParam Map<String, Object> params) {
+		// 存在，不通过，false
+		return !apiContentService.exit(params);
+	}
+
+
 }

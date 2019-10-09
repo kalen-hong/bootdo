@@ -1,4 +1,5 @@
 $().ready(function() {
+	parent.layer.alert("调时");
 	validateRule();
 });
 
@@ -36,13 +37,24 @@ function validateRule() {
 	var icon = "<i class='fa fa-times-circle'></i> ";
 	$("#signupForm").validate({
 		rules : {
-			name : {
-				required : true
+			clientId : {
+				required : true,
+				remote : {
+					url : "/system/userBusiness/exit", // 后台处理程序
+					type : "post", // 数据发送方式
+					dataType : "json", // 接受数据格式
+					data : { // 要传递的数据
+						apiUrl : function() {
+							return $("#clientId").val();
+						}
+					}
+				}
 			}
 		},
 		messages : {
-			name : {
-				required : icon + "请输入姓名"
+			clientId : {
+				required : icon + "请输入clientId",
+				remote : icon + "clientId已经存在"
 			}
 		}
 	})

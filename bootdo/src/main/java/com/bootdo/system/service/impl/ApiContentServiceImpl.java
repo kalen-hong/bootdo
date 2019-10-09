@@ -82,5 +82,11 @@ public class ApiContentServiceImpl implements ApiContentService {
 		}
 		return list.get(0);
 	}
-	
+
+	@Override
+	public boolean exit(Map<String, Object> params) {
+		boolean exit;
+		exit = apiContentDao.list(params).size() > 0;
+		return exit;
+	}
 }

@@ -118,5 +118,13 @@ public class UserBusinessController extends BaseController {
 		userBusinessService.batchRemove(ids);
 		return R.ok();
 	}
+
+
+    @PostMapping("/exit")
+    @ResponseBody
+    boolean exit(@RequestParam Map<String, Object> params) {
+        // 存在，不通过，false
+        return !userBusinessService.exit(params);
+    }
 	
 }

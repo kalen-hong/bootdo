@@ -64,5 +64,10 @@ public class UserBusinessServiceImpl implements UserBusinessService {
 		}
 		return list.get(0);
 	}
-	
+	@Override
+	public boolean exit(Map<String, Object> params) {
+		boolean exit;
+		exit = userBusinessDao.list(params).size() > 0;
+		return exit;
+	}
 }

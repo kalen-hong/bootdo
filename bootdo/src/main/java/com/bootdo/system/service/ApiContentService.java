@@ -34,4 +34,6 @@ public interface ApiContentService {
 	Set<String> listAllEnabledUrl();
 	
 	ApiContentDO getApiContent(String url);
+
+	boolean exit(Map<String, Object> params);
 }

@@ -1,5 +1,4 @@
 $().ready(function() {
-	parent.layer.alert("调时");
 	validateRule();
 });
 
@@ -49,12 +48,18 @@ function validateRule() {
 						}
 					}
 				}
+			},
+			username : {
+				required : true
 			}
 		},
 		messages : {
 			clientId : {
 				required : icon + "请输入clientId",
 				remote : icon + "clientId已经存在"
+			},
+			username : {
+				required : icon + "请输入用户名",
 			}
 		}
 	})

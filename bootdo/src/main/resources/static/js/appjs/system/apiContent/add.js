@@ -50,12 +50,29 @@ function validateRule() {
 					}
 				}
 			},
-
+			apiDesc : {
+				required : true
+			},
+			requestMode : {
+				required : true
+			},
+			requestCost : {
+				required : true
+			}
 		},
 		messages : {
 			apiUrl : {
 				required : icon + "请输入接口地址",
 				remote : icon + "接口地址已经存在"
+			},
+			apiDesc : {
+				required : icon + "请输入接口描述"
+			},
+			requestMode : {
+				required : icon + "请选择接口请求方式"
+			},
+			requestCost : {
+				required : icon + "请输入接口调用费用"
 			}
 		}
 	})

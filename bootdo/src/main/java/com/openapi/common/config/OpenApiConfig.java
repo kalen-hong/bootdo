@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConfigurationProperties(prefix="bootdo")
-public class BootdoConfig {
+public class OpenApiConfig {
 	//上传路径
 	private String uploadPath;
 

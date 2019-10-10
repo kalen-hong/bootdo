@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.util.*;
 
-import com.openapi.common.config.BootdoConfig;
+import com.openapi.common.config.OpenApiConfig;
 import com.openapi.common.domain.FileDO;
 import com.openapi.common.service.FileService;
 import com.openapi.common.utils.*;
@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private FileService sysFileService;
     @Autowired
-    private BootdoConfig bootdoConfig;
+    private OpenApiConfig bootdoConfig;
     @Autowired
     DeptService deptService;
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);

@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.openapi.common.annotation.Log;
-import com.openapi.common.config.BootdoConfig;
+import com.openapi.common.config.OpenApiConfig;
 import com.openapi.common.controller.BaseController;
 import com.openapi.common.domain.FileDO;
 import com.openapi.common.domain.Tree;
@@ -41,7 +41,7 @@ public class LoginController extends BaseController {
     @Autowired
     FileService fileService;
     @Autowired
-    BootdoConfig bootdoConfig;
+    OpenApiConfig bootdoConfig;
 
     @GetMapping({"/", ""})
     String welcome(Model model) {

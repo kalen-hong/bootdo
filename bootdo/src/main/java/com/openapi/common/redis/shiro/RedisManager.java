@@ -1,7 +1,7 @@
 package com.openapi.common.redis.shiro;
 
 /**
- * @author bootdo 1992lcg@163.com
+ * @author liy
  * @version V1.0
  */
 

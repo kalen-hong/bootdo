@@ -1,6 +1,6 @@
 package com.openapi.common.service.impl;
 
-import com.openapi.common.config.BootdoConfig;
+import com.openapi.common.config.OpenApiConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,7 @@ public class FileServiceImpl implements FileService {
 	private FileDao sysFileMapper;
 
 	@Autowired
-	private BootdoConfig bootdoConfig;
+	private OpenApiConfig bootdoConfig;
 	@Override
 	public FileDO get(Long id){
 		return sysFileMapper.get(id);

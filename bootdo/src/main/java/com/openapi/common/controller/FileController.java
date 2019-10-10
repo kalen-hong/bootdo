@@ -1,6 +1,6 @@
 package com.openapi.common.controller;
 
-import com.openapi.common.config.BootdoConfig;
+import com.openapi.common.config.OpenApiConfig;
 import com.openapi.common.domain.FileDO;
 import com.openapi.common.service.FileService;
 import com.openapi.common.utils.*;
@@ -32,7 +32,7 @@ public class FileController extends BaseController {
 	private FileService sysFileService;
 
 	@Autowired
-	private BootdoConfig bootdoConfig;
+	private OpenApiConfig bootdoConfig;
 
 	@GetMapping()
 	@RequiresPermissions("common:sysFile:sysFile")

@@ -57,7 +57,7 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
-/bootdo.iml
+/openapi.iml
 
 # log
 applog

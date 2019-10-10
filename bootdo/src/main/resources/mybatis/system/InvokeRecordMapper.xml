@@ -12,10 +12,10 @@
         <where>  
 		  		  <if test="id != null and id != ''"> and id = #{id} </if>
 		  		  <if test="interfaceName != null and interfaceName != ''"> and interface_name = #{interfaceName} </if>
-		  		  <if test="url != null and url != ''"> and url = #{url} </if>
+		  		  <if test="url != null and url != ''"> and url like CONCAT('%',#{url},'%') </if>
 		  		  <if test="remark != null and remark != ''"> and remark = #{remark} </if>
 		  		  <if test="invokeTime != null and invokeTime != ''"> and invoke_time = #{invokeTime} </if>
-		  		  <if test="clientId != null and clientId != ''"> and CLIENT_ID = #{clientId} </if>
+		  		  <if test="clientId != null and clientId != ''"> or CLIENT_ID =#{clientId} </if>
 		  		  <if test="clientIp != null and clientIp != ''"> and client_ip = #{clientIp} </if>
 		  		</where>
         <choose>
@@ -36,13 +36,13 @@
 
  	<select id="count" resultType="int">
 		select count(*) from api_invoke_record
-		 <where>  
+		 <where>
 		  		  <if test="id != null and id != ''"> and id = #{id} </if>
 		  		  <if test="interfaceName != null and interfaceName != ''"> and interface_name = #{interfaceName} </if>
-		  		  <if test="url != null and url != ''"> and url = #{url} </if>
+		  		  <if test="url != null and url != ''"> and url like CONCAT('%',#{url},'%') </if>
 		  		  <if test="remark != null and remark != ''"> and remark = #{remark} </if>
 		  		  <if test="invokeTime != null and invokeTime != ''"> and invoke_time = #{invokeTime} </if>
-		  		  <if test="clientId != null and clientId != ''"> and CLIENT_ID = #{clientId} </if>
+		  		  <if test="clientId != null and clientId != ''"> or CLIENT_ID =#{clientId} </if>
 		  		  <if test="clientIp != null and clientIp != ''"> and client_ip = #{clientIp} </if>
 		  		</where>
 	</select>

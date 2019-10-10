@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.bootdo.system.dao.ApiContentDao">
+<mapper namespace="com.openapi.system.dao.ApiContentDao">
 
-	<select id="get" resultType="com.bootdo.system.domain.ApiContentDO">
+	<select id="get" resultType="com.openapi.system.domain.ApiContentDO">
 		select `id`,`api_url`,`api_desc`,`request_mode`,`request_cost`,`status`,`gtm_create`,`gtm_modified` from system_api_content where id = #{value}
 	</select>
 	
-	<select id="list" resultType="com.bootdo.system.domain.ApiContentDO">
+	<select id="list" resultType="com.openapi.system.domain.ApiContentDO">
 		select `id`,`api_url`,`api_desc`,`request_mode`,`request_cost`,`status`,`gtm_create`,`gtm_modified` from system_api_content
         <where>  
 		  		  <if test="id != null and id != ''"> and id = #{id} </if>
@@ -46,7 +46,7 @@
 		  		</where>
 	</select>
 	 
-	<insert id="save" parameterType="com.bootdo.system.domain.ApiContentDO">
+	<insert id="save" parameterType="com.openapi.system.domain.ApiContentDO">
 		insert into system_api_content
 		(
 			`id`, 
@@ -71,7 +71,7 @@
 		)
 	</insert>
 	 
-	<update id="update" parameterType="com.bootdo.system.domain.ApiContentDO">
+	<update id="update" parameterType="com.openapi.system.domain.ApiContentDO">
 		update system_api_content 
 		<set>
 			<if test="apiUrl != null">`api_url` = #{apiUrl}, </if>
@@ -97,7 +97,7 @@
 	</delete>
 	
 	
-	<select id="listAllApi" resultType="com.bootdo.system.domain.ApiContentDO">
+	<select id="listAllApi" resultType="com.openapi.system.domain.ApiContentDO">
 		select `api_url`,`api_desc`,`request_mode`,`request_cost` from system_api_content
 	</select>
 	

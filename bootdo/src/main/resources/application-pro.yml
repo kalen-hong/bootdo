@@ -5,7 +5,7 @@ bootdo:
 logging:
   level:
     root: error
-    com.bootdo: info
+    com.openapi: info
 spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource

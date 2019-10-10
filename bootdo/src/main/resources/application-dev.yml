@@ -2,7 +2,7 @@
 logging:
   level:
     root: info
-    com.bootdo: info
+    com.openapi: info
 server:
       #端口号
   port: 8888

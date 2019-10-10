@@ -1,8 +1,8 @@
 
 logging:
   level:
-    root: debug
-    com.bootdo: debug
+    root: info
+    com.bootdo: info
 server:
       #端口号
   port: 8888

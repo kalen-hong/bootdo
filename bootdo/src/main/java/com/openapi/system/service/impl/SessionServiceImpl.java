@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * 待完善
  *
- * @author bootdo
+ * @author liy
  */
 @Service
 public class SessionServiceImpl implements SessionService {

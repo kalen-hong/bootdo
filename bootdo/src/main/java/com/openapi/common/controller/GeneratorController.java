@@ -45,7 +45,7 @@ public class GeneratorController {
 		String[] tableNames = new String[] { tableName };
 		byte[] data = generatorService.generatorCode(tableNames);
 		response.reset();
-		response.setHeader("Content-Disposition", "attachment; filename=\"bootdo.zip\"");
+		response.setHeader("Content-Disposition", "attachment; filename=\"openapi.zip\"");
 		response.addHeader("Content-Length", "" + data.length);
 		response.setContentType("application/octet-stream; charset=UTF-8");
 
@@ -58,7 +58,7 @@ public class GeneratorController {
 		tableNames = JSON.parseArray(tables).toArray(tableNames);
 		byte[] data = generatorService.generatorCode(tableNames);
 		response.reset();
-		response.setHeader("Content-Disposition", "attachment; filename=\"bootdo.zip\"");
+		response.setHeader("Content-Disposition", "attachment; filename=\"openapi.zip\"");
 		response.addHeader("Content-Length", "" + data.length);
 		response.setContentType("application/octet-stream; charset=UTF-8");
 

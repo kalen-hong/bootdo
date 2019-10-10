@@ -41,7 +41,7 @@ public class LoginController extends BaseController {
     @Autowired
     FileService fileService;
     @Autowired
-    OpenApiConfig bootdoConfig;
+    OpenApiConfig openApiConfig;
 
     @GetMapping({"/", ""})
     String welcome(Model model) {
@@ -71,8 +71,8 @@ public class LoginController extends BaseController {
 
     @GetMapping("/login")
     String login(Model model) {
-        model.addAttribute("username", bootdoConfig.getUsername());
-        model.addAttribute("password", bootdoConfig.getPassword());
+        model.addAttribute("username", openApiConfig.getUsername());
+        model.addAttribute("password", openApiConfig.getPassword());
         return "login";
     }
 

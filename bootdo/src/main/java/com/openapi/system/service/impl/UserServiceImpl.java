@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private FileService sysFileService;
     @Autowired
-    private OpenApiConfig bootdoConfig;
+    private OpenApiConfig openApiConfig;
     @Autowired
     DeptService deptService;
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
@@ -237,7 +237,7 @@ public class UserServiceImpl implements UserService {
             boolean flag = ImageIO.write(rotateImage, prefix, out);
             //转换后存入数据库
             byte[] b = out.toByteArray();
-            FileUtil.uploadFile(b, bootdoConfig.getUploadPath(), fileName);
+            FileUtil.uploadFile(b, openApiConfig.getUploadPath(), fileName);
         } catch (Exception e) {
             throw new Exception("图片裁剪错误！！");
         }

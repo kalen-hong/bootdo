@@ -1,4 +1,4 @@
-bootdo:
+openapi:
   uploadPath: /var/uploaded_files/
   username: test
   password: 111111

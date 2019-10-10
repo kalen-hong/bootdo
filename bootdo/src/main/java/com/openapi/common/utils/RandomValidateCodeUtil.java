@@ -12,7 +12,7 @@ import java.awt.image.BufferedImage;
 import java.util.Random;
 
 /**
- * @author bootdo
+ * @author liy
  */
 public class RandomValidateCodeUtil {
 

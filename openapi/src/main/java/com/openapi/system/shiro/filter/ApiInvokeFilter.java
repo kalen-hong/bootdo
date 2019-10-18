@@ -46,7 +46,7 @@ public class ApiInvokeFilter extends AbstractPathMatchingFilter {
 	private ApiInvokeRecordService apiInvokeRecordService;
 
 	private ApiContentService apiContentService;
-	
+
 	private RedisManager redisManager;
 
 	@Override
@@ -62,21 +62,26 @@ public class ApiInvokeFilter extends AbstractPathMatchingFilter {
 		// 判断是否为JWT认证请求
 		if ((null != subject && !subject.isAuthenticated()) && StringUtils.isNotEmpty(accessToken)) {
 			boolean success = tokenAuthenticatedSuccess(subject, servletRequest, servletResponse);
-			if (success && providerOuterBusinessApi(url)) {
+			if (success) {
 				ApiContentDO apiContentDO = apiContentService.getApiContent(url);
 				// 校验api接口是否禁用
 				if (apiContentDO == null) {
 					ResponseVo<String> responseVo = new ResponseVo<String>(ResponseVo.FAIL, "接口不存在", null);
 					RequestResponseUtil.responseWrite(JSON.toJSONString(responseVo), servletResponse);
 					return false;
-				}else if(!ApiConstants.API_STATUS_ENABLED.equals(String.valueOf(apiContentDO.getStatus()))) {
+				} else if (!ApiConstants.API_STATUS_ENABLED.equals(String.valueOf(apiContentDO.getStatus()))) {
 					ResponseVo<String> responseVo = new ResponseVo<String>(ResponseVo.FAIL, "接口已被禁用", null);
 					RequestResponseUtil.responseWrite(JSON.toJSONString(responseVo), servletResponse);
 					return false;
 				}
+				String clientId = JsonWebTokenUtil.parseJwt(accessToken, JsonWebTokenUtil.SECRET_KEY).getAppId();
+				if(!latestToken(accessToken, clientId)) {
+					ResponseVo<String> responseVo = new ResponseVo<String>(ResponseVo.FAIL, "请输入最新的token", null);
+					RequestResponseUtil.responseWrite(JSON.toJSONString(responseVo), servletResponse);
+					return false;
+				}
 				// 接口调用redis计数--断路限流
-				String clientId=JsonWebTokenUtil.parseJwt(accessToken, JsonWebTokenUtil.SECRET_KEY).getAppId();
-				if(apiInvokeIsNeedLimit(clientId, String.valueOf(apiContentDO.getId()))) {
+				if (apiInvokeIsNeedLimit(clientId, String.valueOf(apiContentDO.getId()))) {
 					ResponseVo<String> responseVo = new ResponseVo<String>(ResponseVo.FAIL, "接口调用频繁，请稍后再试", null);
 					RequestResponseUtil.responseWrite(JSON.toJSONString(responseVo), servletResponse);
 					return false;
@@ -93,42 +98,39 @@ public class ApiInvokeFilter extends AbstractPathMatchingFilter {
 
 	private boolean tokenAuthenticatedSuccess(Subject subject, ServletRequest servletRequest,
 			ServletResponse servletResponse) {
-		String exceptionMsg="";
+		String exceptionMsg = "";
 		try {
 			ApiInvokeToken token = createApiInvokeToken(servletRequest);
 			subject.login(token);
-			if(latestToken(token.getJwt(), token.getAppId())) {
-				return true;
-			}
-			exceptionMsg="请传入最新获取的的token";
+			return true;
 		} catch (ApiAuthenticationException e) {
-			exceptionMsg=e.getMessage();
+			exceptionMsg = e.getMessage();
 		} catch (ExpiredJwtException e) {
-			exceptionMsg="token已过期，请刷新token信息";
+			exceptionMsg = "token已过期，请刷新token信息";
 		} catch (SignatureException e) {
-			exceptionMsg="token非法，请重新获取token";
+			exceptionMsg = "token非法，请重新获取token";
 		} catch (AuthenticationException e) {
 			LOGGER.error(e.getMessage(), e);
-			exceptionMsg="token无效，请重新获取token";
+			exceptionMsg = "token无效，请重新获取token";
 		} catch (Exception e) {
 			LOGGER.error(IpUtil.getIpFromRequest(WebUtils.toHttp(servletRequest)) + "--JWT认证失败" + e.getMessage(), e);
-			exceptionMsg="token无效，请重新获取token";
+			exceptionMsg = "token无效，请重新获取token";
 		}
 		ResponseVo<String> responseVo = new ResponseVo<String>(ResponseVo.FAIL, exceptionMsg, null);
 		RequestResponseUtil.responseWrite(JSON.toJSONString(responseVo), servletResponse);
 		return false;
 	}
-	
-	private boolean latestToken(String token,String clientId) {
+
+	private boolean latestToken(String token, String clientId) {
 		try {
-			String key=String.format(RedisConstants.CLIENT_TOKEN, clientId);
-			String cacheToken=redisManager.get(key);
-			if(StringUtils.isEmpty(cacheToken)) {
+			String key = String.format(RedisConstants.CLIENT_TOKEN, clientId);
+			String cacheToken = redisManager.get(key);
+			if (StringUtils.isEmpty(cacheToken)) {
 				return true;
 			}
 			return cacheToken.equals(token);
 		} catch (Exception e) {
-			LOGGER.error(e.getMessage(),e);
+			LOGGER.error(e.getMessage(), e);
 			return true;
 		}
 	}
@@ -187,43 +189,31 @@ public class ApiInvokeFilter extends AbstractPathMatchingFilter {
 	}
 
 	/**
-	 * 是否是提供给外部的业务api
-	 * 
-	 * @param url
-	 * @return
-	 */
-	private boolean providerOuterBusinessApi(String url) {
-		if (url.endsWith("/getToken") || url.endsWith("/refreshToken") || url.endsWith("listOpenApi")) {
-			return false;
-		}
-		return true;
-	}
-	
-	/**
 	 * api调用是否需要限制(针对同一接口,3秒之内只允许请求3次)
+	 * 
 	 * @param clientId
 	 * @param apiUrlId
 	 * @return
 	 */
-	private boolean apiInvokeIsNeedLimit(String clientId,String apiUrlId) {
+	private boolean apiInvokeIsNeedLimit(String clientId, String apiUrlId) {
 		try {
-			String key=String.format(RedisConstants.API_INVOKE_COUNTER, clientId,apiUrlId);
-			long singleApiInvokeNum=redisManager.incr(key, 1);
-			apiInvokeCounterSetExpire(key);
-			return singleApiInvokeNum>RedisConstants.API_INVOKE_LIMIT;
+			String key = String.format(RedisConstants.API_INVOKE_COUNTER, clientId, apiUrlId);
+			long singleApiInvokeNum = redisManager.incr(key, 1);
+			apiInvokeCounterSetExpire(key, singleApiInvokeNum);
+			return singleApiInvokeNum > RedisConstants.API_INVOKE_LIMIT;
 		} catch (Exception e) {
-			LOGGER.error(e.getMessage(),e);
+			LOGGER.error(e.getMessage(), e);
 			return false;
 		}
 	}
-	
-	private void apiInvokeCounterSetExpire(String key) {
+
+	private void apiInvokeCounterSetExpire(String key, long singleApiInvokeNum) {
 		try {
-			if(!redisManager.exist(key)) {
+			if (singleApiInvokeNum == 1) {
 				redisManager.expire(key, RedisConstants.API_INVOKE_COUNTER_EXPIRETIME);
 			}
 		} catch (Exception e) {
-			LOGGER.error(e.getMessage(),e);
+			LOGGER.error(e.getMessage(), e);
 		}
 	}
 }

@@ -112,7 +112,7 @@ public class GenUtils {
         map.put("columns", tableDO.getColumns());
         map.put("package", config.getString("package"));
         map.put("author", config.getString("author"));
-        map.put("email", config.getString("email"));
+//        map.put("email", config.getString("email"));
         map.put("datetime", DateUtils.format(new Date(), DateUtils.DATE_TIME_PATTERN));
         VelocityContext context = new VelocityContext(map);
 

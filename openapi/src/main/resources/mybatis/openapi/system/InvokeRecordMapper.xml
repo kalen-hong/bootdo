@@ -2,12 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.openapi.system.dao.InvokeRecordDao">
-
-	<select id="get" resultType="com.openapi.system.domain.InvokeRecordDO">
+	<resultMap id="BaseResultMap" type="com.openapi.system.domain.InvokeRecordDO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="interface_name" jdbcType="VARCHAR" property="interfaceName" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="invoke_time" jdbcType="TIMESTAMP" property="invokeTime" />
+    <result column="CLIENT_ID" jdbcType="VARCHAR" property="clientId" />
+    <result column="client_ip" jdbcType="VARCHAR" property="clientIp" />
+  </resultMap>
+	<select id="get" resultMap="BaseResultMap">
 		select `id`,`interface_name`,`url`,`remark`,`invoke_time`,`CLIENT_ID`,`client_ip` from api_invoke_record where id = #{value}
 	</select>
 
-	<select id="list" resultType="com.openapi.system.domain.InvokeRecordDO">
+	<select id="list" resultMap="BaseResultMap">
 		select `id`,`interface_name`,`url`,`remark`,`invoke_time`,`CLIENT_ID`,`client_ip` from api_invoke_record
         <where>  
 		  		  <if test="id != null and id != ''"> and id = #{id} </if>

@@ -2,14 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.openapi.system.dao.RoleDao">
-
-	<select id="get" resultType="com.openapi.system.domain.RoleDO">
+	<resultMap id="BaseResultMap" type="com.openapi.system.domain.RoleDO">
+    <id column="role_id" jdbcType="BIGINT" property="roleId" />
+    <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+    <result column="role_sign" jdbcType="VARCHAR" property="roleSign" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="user_id_create" jdbcType="BIGINT" property="userIdCreate" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+  </resultMap>
+	<select id="get" resultMap="BaseResultMap">
 		select
 		`role_id`,`role_name`,`role_sign`,`remark`,`user_id_create`,`gmt_create`,`gmt_modified`
 		from sys_role where role_id = #{value}
 	</select>
 
-	<select id="list" resultType="com.openapi.system.domain.RoleDO">
+	<select id="list" resultMap="BaseResultMap">
 		select
 		`role_id`,`role_name`,`role_sign`,`remark`,`user_id_create`,`gmt_create`,`gmt_modified`
 		from sys_role

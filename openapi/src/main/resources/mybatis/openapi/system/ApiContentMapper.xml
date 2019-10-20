@@ -2,12 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.openapi.system.dao.ApiContentDao">
-
-	<select id="get" resultType="com.openapi.system.domain.ApiContentDO">
+	  <resultMap id="BaseResultMap" type="com.openapi.system.domain.ApiContentDO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="api_url" jdbcType="VARCHAR" property="apiUrl" />
+    <result column="api_desc" jdbcType="VARCHAR" property="apiDesc" />
+    <result column="request_mode" jdbcType="VARCHAR" property="requestMode" />
+    <result column="request_cost" jdbcType="VARCHAR" property="requestCost" />
+    <result column="status" jdbcType="CHAR" property="status" />
+    <result column="gtm_create" jdbcType="TIMESTAMP" property="gtmCreate" />
+    <result column="gtm_modified" jdbcType="TIMESTAMP" property="gtmModified" />
+  </resultMap>
+	
+	<select id="get" resultMap="BaseResultMap">
 		select `id`,`api_url`,`api_desc`,`request_mode`,`request_cost`,`status`,`gtm_create`,`gtm_modified` from system_api_content where id = #{value}
 	</select>
 	
-	<select id="list" resultType="com.openapi.system.domain.ApiContentDO">
+	<select id="list" resultMap="BaseResultMap">
 		select `id`,`api_url`,`api_desc`,`request_mode`,`request_cost`,`status`,`gtm_create`,`gtm_modified` from system_api_content
         <where>  
 		  		  <if test="id != null and id != ''"> and id = #{id} </if>
@@ -97,7 +107,7 @@
 	</delete>
 	
 	
-	<select id="listAllApi" resultType="com.openapi.system.domain.ApiContentDO">
+	<select id="listAllApi" resultMap="BaseResultMap">
 		select `api_url`,`api_desc`,`request_mode`,`request_cost` from system_api_content
 	</select>
 	

@@ -2,12 +2,45 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.openapi.activiti.dao.SalaryDao">
-
-	<select id="get" resultType="com.openapi.activiti.domain.SalaryDO">
+	
+	<resultMap id="BaseResultMap" type="com.openapi.activiti.domain.SalaryDO">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="PROC_INS_ID" jdbcType="VARCHAR" property="procInsId" />
+    <result column="USER_ID" jdbcType="VARCHAR" property="userId" />
+    <result column="OFFICE_ID" jdbcType="VARCHAR" property="officeId" />
+    <result column="POST" jdbcType="VARCHAR" property="post" />
+    <result column="AGE" jdbcType="CHAR" property="age" />
+    <result column="EDU" jdbcType="VARCHAR" property="edu" />
+    <result column="CONTENT" jdbcType="VARCHAR" property="content" />
+    <result column="OLDA" jdbcType="VARCHAR" property="olda" />
+    <result column="OLDB" jdbcType="VARCHAR" property="oldb" />
+    <result column="OLDC" jdbcType="VARCHAR" property="oldc" />
+    <result column="NEWA" jdbcType="VARCHAR" property="newa" />
+    <result column="NEWB" jdbcType="VARCHAR" property="newb" />
+    <result column="NEWC" jdbcType="VARCHAR" property="newc" />
+    <result column="ADD_NUM" jdbcType="VARCHAR" property="addNum" />
+    <result column="EXE_DATE" jdbcType="VARCHAR" property="exeDate" />
+    <result column="HR_TEXT" jdbcType="VARCHAR" property="hrText" />
+    <result column="LEAD_TEXT" jdbcType="VARCHAR" property="leadText" />
+    <result column="MAIN_LEAD_TEXT" jdbcType="VARCHAR" property="mainLeadText" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="del_flag" jdbcType="CHAR" property="delFlag" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, PROC_INS_ID, USER_ID, OFFICE_ID, POST, AGE, EDU, CONTENT, OLDA, OLDB, OLDC, NEWA, 
+    NEWB, NEWC, ADD_NUM, EXE_DATE, HR_TEXT, LEAD_TEXT, MAIN_LEAD_TEXT, create_by, create_date, 
+    update_by, update_date, remarks, del_flag
+  </sql>
+	
+	<select id="get" resultMap="BaseResultMap">
 		select `id`,`PROC_INS_ID`,`USER_ID`,`OFFICE_ID`,`POST`,`AGE`,`EDU`,`CONTENT`,`OLDA`,`OLDB`,`OLDC`,`NEWA`,`NEWB`,`NEWC`,`ADD_NUM`,`EXE_DATE`,`HR_TEXT`,`LEAD_TEXT`,`MAIN_LEAD_TEXT`,`create_by`,`create_date`,`update_by`,`update_date`,`remarks`,`del_flag` from salary where id = #{value}
 	</select>
 
-	<select id="list" resultType="com.openapi.activiti.domain.SalaryDO">
+	<select id="list" resultMap="BaseResultMap">
 		select `id`,`PROC_INS_ID`,`USER_ID`,`OFFICE_ID`,`POST`,`AGE`,`EDU`,`CONTENT`,`OLDA`,`OLDB`,`OLDC`,`NEWA`,`NEWB`,`NEWC`,`ADD_NUM`,`EXE_DATE`,`HR_TEXT`,`LEAD_TEXT`,`MAIN_LEAD_TEXT`,`create_by`,`create_date`,`update_by`,`update_date`,`remarks`,`del_flag` from salary
         <where>  
 		  		  <if test="id != null and id != ''"> and id = #{id} </if>

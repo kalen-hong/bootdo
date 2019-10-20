@@ -2,12 +2,31 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.openapi.blog.dao.ContentDao">
-
-	<select id="get" resultType="com.openapi.blog.domain.ContentDO">
+	
+	<resultMap id="BaseResultMap" type="com.openapi.blog.domain.ContentDO">
+    <id column="cid" jdbcType="BIGINT" property="cid" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="slug" jdbcType="VARCHAR" property="slug" />
+    <result column="created" jdbcType="BIGINT" property="created" />
+    <result column="modified" jdbcType="BIGINT" property="modified" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="tags" jdbcType="VARCHAR" property="tags" />
+    <result column="categories" jdbcType="VARCHAR" property="categories" />
+    <result column="hits" jdbcType="INTEGER" property="hits" />
+    <result column="comments_num" jdbcType="INTEGER" property="commentsNum" />
+    <result column="allow_comment" jdbcType="INTEGER" property="allowComment" />
+    <result column="allow_ping" jdbcType="INTEGER" property="allowPing" />
+    <result column="allow_feed" jdbcType="INTEGER" property="allowFeed" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="author" jdbcType="VARCHAR" property="author" />
+    <result column="gtm_create" jdbcType="TIMESTAMP" property="gtmCreate" />
+    <result column="gtm_modified" jdbcType="TIMESTAMP" property="gtmModified" />
+  </resultMap>
+	<select id="get" resultMap="BaseResultMap">
 		select `cid`,`title`,`slug`,`created`,`modified`,`content`,`type`,`tags`,`categories`,`hits`,`comments_num`,`allow_comment`,`allow_ping`,`allow_feed`,`status`,`author`,`gtm_create`,`gtm_modified` from blog_content where cid = #{value}
 	</select>
 
-	<select id="list" resultType="com.openapi.blog.domain.ContentDO">
+	<select id="list" resultMap="BaseResultMap">
 		select `cid`,`title`,`slug`,`created`,`modified`,`type`,`tags`,`categories`,`hits`,`comments_num`,`allow_comment`,`allow_ping`,`allow_feed`,`status`,`author`,`gtm_create`,`gtm_modified` from blog_content
         <where>  
 		  		  <if test="cid != null and cid != ''"> and cid = #{cid} </if>

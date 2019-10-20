@@ -2,12 +2,32 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.openapi.system.dao.UserDao">
-
-    <select id="get" resultType="com.openapi.system.domain.UserDO">
+	<resultMap id="BaseResultMap" type="com.openapi.system.domain.UserDO">
+    <id column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="dept_id" jdbcType="BIGINT" property="deptId" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="user_id_create" jdbcType="BIGINT" property="userIdCreate" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <result column="sex" jdbcType="BIGINT" property="sex" />
+    <result column="birth" jdbcType="TIMESTAMP" property="birth" />
+    <result column="pic_id" jdbcType="BIGINT" property="picId" />
+    <result column="live_address" jdbcType="VARCHAR" property="liveAddress" />
+    <result column="hobby" jdbcType="VARCHAR" property="hobby" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="district" jdbcType="VARCHAR" property="district" />
+  </resultMap>
+    <select id="get" resultMap="BaseResultMap">
 		select `user_id`,`username`,`name`,`password`,`dept_id`,`email`,`mobile`,`status`,`user_id_create`,`gmt_create`,`gmt_modified`,`sex`,`birth`,`pic_id`,`live_address`,`hobby`,`province`,`city`,`district` from sys_user where user_id = #{value}
 	</select>
 
-    <select id="list" resultType="com.openapi.system.domain.UserDO">
+    <select id="list" resultMap="BaseResultMap">
         select
         `user_id`,`username`,`name`,`password`,`dept_id`,`email`,`mobile`,`status`,`user_id_create`,`gmt_create`,`gmt_modified`,`sex`,`birth`,`pic_id`,`live_address`,`hobby`,`province`,`city`,`district`
         from sys_user

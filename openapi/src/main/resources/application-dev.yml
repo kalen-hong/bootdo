@@ -1,6 +1,6 @@
 openapi:
   uploadPath: /var/uploaded_files/
-  username: test
+  username: admin
   password: 111111
 logging:
   level:
@@ -17,9 +17,9 @@ spring:
     openapi:
       type: com.alibaba.druid.pool.DruidDataSource
       driverClassName: com.mysql.jdbc.Driver
-      url: jdbc:mysql://127.0.0.1:3306/openapi?useUnicode=true&characterEncoding=utf8
-      username: root
-      password: 12345678
+      url: jdbc:mysql://14.116.209.5:3306/xxx_job?useUnicode=true&characterEncoding=utf8
+      username: user
+      password: User@147258369
       initialSize: 1
       minIdle: 3
       maxActive: 20

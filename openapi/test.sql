@@ -30,3 +30,18 @@ CREATE TABLE `sys_test_user` (
 -- ----------------------------
 INSERT INTO `sys_test_user` VALUES ('1', '123');
 INSERT INTO `sys_test_user` VALUES ('2', '23333');
+
+DROP TABLE IF EXISTS `sms_message`;
+CREATE TABLE `sms_message` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `msg_no` varchar(30) DEFAULT NULL COMMENT '编号',
+  `iphone_no` varchar(50) DEFAULT NULL COMMENT '号码',
+  `msg_content` varchar(500) DEFAULT NULL COMMENT '内容',
+  `msg_time` varchar(30) DEFAULT NULL COMMENT '发送时间',
+  `status` char(2) DEFAULT NULL COMMENT '状态',
+  `create_by` varchar(40) DEFAULT NULL,
+  `create_date` timestamp NULL DEFAULT NULL,
+  `update_by` varchar(40) DEFAULT NULL,
+  `update_date` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8

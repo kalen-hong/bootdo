@@ -12,6 +12,11 @@ public class ResponseVo<T> implements Serializable {
 	private String code;
 	private String msg;
 	private T data;
+	public ResponseVo() {
+		super();
+
+	}
+
 
 	public ResponseVo(String code, String msg, T data) {
 		super();

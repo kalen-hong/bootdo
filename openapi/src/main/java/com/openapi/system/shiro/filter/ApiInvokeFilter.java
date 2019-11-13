@@ -4,6 +4,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.subject.Subject;
@@ -31,6 +33,8 @@ import com.openapi.system.vo.ResponseVo;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
 
+import java.io.InputStream;
+
 /**
  * 第三方api调用过滤器
  * 
@@ -52,13 +56,16 @@ public class ApiInvokeFilter extends AbstractPathMatchingFilter {
 	@Override
 	protected boolean isAccessAllowed(ServletRequest servletRequest, ServletResponse servletResponse,
 			Object mappedValue) throws Exception {
+		//return true;
 		String url = ((HttpServletRequest) servletRequest).getServletPath();
 		if (url.endsWith("/getToken")) {
 			return true;
 		}
 		Subject subject = getSubject(servletRequest, servletResponse);
 		// 记录api调用记录
-		String accessToken = servletRequest.getParameter("accessToken");
+		InputStream in = servletRequest.getInputStream();
+		String request = IOUtils.toString(in, "UTF-8");
+		String accessToken = JSONObject.parseObject(request).getString("accessToken");
 		// 判断是否为JWT认证请求
 		if ((null != subject && !subject.isAuthenticated()) && StringUtils.isNotEmpty(accessToken)) {
 			boolean success = tokenAuthenticatedSuccess(subject, servletRequest, servletResponse);

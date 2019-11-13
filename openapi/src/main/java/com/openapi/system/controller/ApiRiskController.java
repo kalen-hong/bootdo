@@ -5,15 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.openapi.common.controller.BaseController;
+import com.openapi.system.vo.RequestVo;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.openapi.system.domain.ApiContentDO;
 import com.openapi.system.service.ApiContentService;
@@ -30,28 +29,27 @@ import com.openapi.system.vo.ResponseVo;
  */
 @RestController
 @RequestMapping("/api/risk")
-public class ApiRiskController {
-	protected Logger log = LoggerFactory.getLogger(ApiRiskController.class);
+public class ApiRiskController  extends BaseController {
+
 	@Autowired
 	protected ApiContentService apiContentService;
 
 	@PostMapping("/listOpenApi")
-	public ResponseVo<List<Map<String, Object>>> listOpenApi(@RequestParam("accessToken") String accessToken,
-			@RequestParam("timestamp") String timestamp, @RequestParam("sign") String sign) {
-		log.info("查询所有的风控接口入参accessToken【" + accessToken + "】，timestamp【" + timestamp + "】，sign【" + sign + "】");
-		if (StringUtils.isEmpty(accessToken) || StringUtils.isEmpty(timestamp) || StringUtils.isEmpty(sign)) {
-			return new ResponseVo<List<Map<String, Object>>>(ResponseVo.FAIL, "【accessToken,timestamp,sign】中有参数传空",
-					null);
+	public ResponseVo<List<Map<String, Object>>> listOpenApi(@RequestBody RequestVo RequestVo) {
+
+		//调用父类操作，进行sign签名验证
+		ResponseVo rvo = super.initSign(RequestVo.getAccessToken(),RequestVo.getTimestamp(),RequestVo.getSign());
+		if(rvo.getCode().equals(ResponseVo.FAIL)){
+			return rvo;
 		}
-		// MD5验签
-		String md5Param = new StringBuffer(accessToken).append(timestamp).toString();
-		if (!sign.equals(MD5Util.md5(md5Param))) {
-			return new ResponseVo<List<Map<String, Object>>>(ResponseVo.FAIL, "签名错误", null);
-		}
+
 		List<ApiContentDO> list = apiContentService.listAllApi();
 		List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
 		if (CollectionUtils.isEmpty(list)) {
-			return new ResponseVo<List<Map<String, Object>>>(ResponseVo.FAIL, "暂无接口对外开放", resultList);
+			rvo.setCode(ResponseVo.FAIL);
+			rvo.setData(resultList);
+			rvo.setMsg("暂无接口对外开放");
+			return rvo;
 		}
 		// 转成map
 		list.forEach(api -> {
@@ -62,6 +60,9 @@ public class ApiRiskController {
 			map.put("requestCost", api.getRequestCost());
 			resultList.add(map);
 		});
-		return new ResponseVo<List<Map<String, Object>>>(ResponseVo.SUCCESS, "success", resultList);
+		rvo.setCode(ResponseVo.SUCCESS);
+		rvo.setData(resultList);
+		rvo.setMsg("success");
+		return rvo;
 	}
 }

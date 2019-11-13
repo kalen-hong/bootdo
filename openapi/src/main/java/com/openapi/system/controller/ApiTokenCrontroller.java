@@ -5,14 +5,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.openapi.common.redis.shiro.RedisManager;
 import com.openapi.system.constant.ApiConstants;
@@ -44,8 +42,10 @@ public class ApiTokenCrontroller {
 	protected RedisManager redisManager;
 
 	@PostMapping("/getToken")
-	public ResponseVo<Map<String, Object>> getToken(@RequestParam("clientId") String clientId,
-			@RequestParam("clientSecret") String clientSecret) {
+	public ResponseVo<Map<String, Object>> getToken(@RequestBody String request) {
+		JSONObject jo = JSONObject.parseObject(request);
+		String  clientId = jo.getString("clientId");
+		String  clientSecret = jo.getString("clientSecret");
 		try {
 			log.info("获取token信息入参，clientId【" + clientId + "】，clientSecret【" + clientSecret + "】");
 			// 验证用户名和密码

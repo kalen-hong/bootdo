@@ -52,6 +52,9 @@ public class MD5Util {
 		String tokenString="eyJhbGciOiJIUzUxMiIsInppcCI6IkRFRiJ9.eNosytEKgzAMQNF_ybMBa2Lb-De2plAH2zDdEMb-XQUf7-H-YG0VJlhiGWgOGUmyQ04cUUQy9lykDEtUZYIO7JPOuam1M6rZFa-HPtF0--p24dxgcmPomSSQ70D39w3shfz_AAAA__8.zPaABx5D_K8FlrDVAyV4FIX1PH0DgLjX_3-CkTJBlGL05qQ8bl8JYOwYbJwKoBq32CghTXWSWVIuH8mY4Asmag";
 		String timestamp="2019-10-07 10:17:12";
 		System.out.println(md5(tokenString+timestamp));
+
+		String phone = "19924575414";
+        System.out.println(md5(phone));
 	}
 
 }

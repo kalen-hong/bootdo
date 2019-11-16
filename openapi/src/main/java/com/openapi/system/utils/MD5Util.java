@@ -49,12 +49,12 @@ public class MD5Util {
     }
     
     public static void main(String[] args) {
-		String tokenString="eyJhbGciOiJIUzUxMiIsInppcCI6IkRFRiJ9.eNosytEKgzAMQNF_ybMBa2Lb-De2plAH2zDdEMb-XQUf7-H-YG0VJlhiGWgOGUmyQ04cUUQy9lykDEtUZYIO7JPOuam1M6rZFa-HPtF0--p24dxgcmPomSSQ70D39w3shfz_AAAA__8.zPaABx5D_K8FlrDVAyV4FIX1PH0DgLjX_3-CkTJBlGL05qQ8bl8JYOwYbJwKoBq32CghTXWSWVIuH8mY4Asmag";
-		String timestamp="2019-10-07 10:17:12";
+		String tokenString="eyJhbGciOiJIUzUxMiIsInppcCI6IkRFRiJ9.eNokykEKgCAQQNG7zDohnSm128yIghElWFBEd89o-T7_hnnPMIGT4KI2SY1ktSJJXkkvWkVjyYYkxIGgg3pIm3nJha_GXGvjVuLKJX_mHSY9WHR-RDQdxLP8wfc4oHleAAAA__8.3wKNh7otfVmVxvB7JvhC3BwvI4aKmKGfyrPm53IXM8I92fZ2fELxoAPH-Febr8TOOPLiQ4cEFfPM1iTy8cCN4A";
+		String timestamp="2019-11-16 14:28:28";
 		System.out.println(md5(tokenString+timestamp));
 
-		String phone = "19924575414";
-        System.out.println(md5(phone));
+//		String phone = "15013870136";
+//        System.out.println(md5(phone));
 	}
 
 }

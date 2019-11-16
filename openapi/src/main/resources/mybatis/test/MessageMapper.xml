@@ -30,7 +30,7 @@
 					  </foreach>
 		  		   </if>
 		  		  <if test="msgContent != null and msgContent != ''"> and msg_content = #{msgContent} </if>
-		  		  <if test="msgTime != null and msgTime != ''"> and msg_time  &lt; #{msgTime} </if>
+		  		  <if test="msgTime != null"> and unix_timestamp(msg_time)  &lt; #{msgTime} </if>
 		  		  <if test="status != null and status != ''"> and status = #{status} </if>
 		  		  <if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
 		  		  <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>

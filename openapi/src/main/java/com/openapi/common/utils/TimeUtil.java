@@ -177,7 +177,7 @@ public class TimeUtil {
     public static long getOffsetDateString(Date date, int dateOffset) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        calendar.add(Calendar.DATE, dateOffset);
+        calendar.add(Calendar.DAY_OF_MONTH, dateOffset);
         return calendar.getTime().getTime();
     }
 

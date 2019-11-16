@@ -34,15 +34,15 @@ public class ApiRiskController  extends BaseController {
 	@Autowired
 	protected ApiContentService apiContentService;
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@PostMapping("/listOpenApi")
-	public ResponseVo<List<Map<String, Object>>> listOpenApi(@RequestBody RequestVo RequestVo) {
+	public ResponseVo<List<Map<String, Object>>> listOpenApi(RequestVo<String> RequestVo) {
 
 		//调用父类操作，进行sign签名验证
-		ResponseVo rvo = super.initSign(RequestVo.getAccessToken(),RequestVo.getTimestamp(),RequestVo.getSign());
+		ResponseVo rvo = super.initSign(RequestVo);
 		if(rvo.getCode().equals(ResponseVo.FAIL)){
 			return rvo;
 		}
-
 		List<ApiContentDO> list = apiContentService.listAllApi();
 		List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
 		if (CollectionUtils.isEmpty(list)) {

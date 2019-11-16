@@ -24,7 +24,7 @@ public class MessageDO implements Serializable {
 	//内容
 	private String msgContent;
 	//发送时间
-	private long msgTime;
+	private String msgTime;
 	//状态
 	private String status;
 	//
@@ -87,13 +87,13 @@ public class MessageDO implements Serializable {
 	/**
 	 * 设置：发送时间
 	 */
-	public void setMsgTime(long msgTime) {
+	public void setMsgTime(String msgTime) {
 		this.msgTime = msgTime;
 	}
 	/**
 	 * 获取：发送时间
 	 */
-	public long getMsgTime() {
+	public String getMsgTime() {
 		return msgTime;
 	}
 	/**

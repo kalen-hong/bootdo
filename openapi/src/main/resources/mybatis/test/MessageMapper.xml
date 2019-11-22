@@ -15,11 +15,11 @@
 		<result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
 	</resultMap>
 	<select id="get" resultMap="BaseResultMap">
-		select `key_id`,`msg_no`,`phone_id`,`content`,`send_time`,`status`,`create_by`,`create_date`,`update_by`,`update_date` from sms_message where key_id = #{value}
+		select `key_id`,`msg_no`,`phone_id`,`content`,`send_time`,`status`,`create_by`,`create_date`,`update_by`,`update_date` from sms_info where key_id = #{value}
 	</select>
 
 	<select id="list" resultMap="BaseResultMap">
-		select `key_id`,`msg_no`,`phone_id`,`content`,`send_time`,`status`,`create_by`,`create_date`,`update_by`,`update_date` from sms_message
+		select `key_id`,`msg_no`,`phone_id`,`content`,`send_time`,`status`,`create_by`,`create_date`,`update_by`,`update_date` from sms_info
 
         <where>  
 		  		  <if test="id != null and id != ''"> and key_id = #{id} </if>
@@ -51,7 +51,7 @@
 	</select>
 	
  	<select id="count" resultType="int">
-		select count(*) from sms_message
+		select count(*) from sms_info
 		 <where>  
 		  		  <if test="id != null and id != ''"> and key_id = #{id} </if>
 		  		  <if test="msgNo != null and msgNo != ''"> and msg_no = #{msgNo} </if>
@@ -67,7 +67,7 @@
 	</select>
 	 
 	<insert id="save" parameterType="com.test.domain.MessageDO">
-		insert into sms_message
+		insert into sms_info
 		(
 			`key_id`,
 			`msg_no`, 
@@ -96,7 +96,7 @@
 	</insert>
 	 
 	<update id="update" parameterType="com.test.domain.MessageDO">
-		update sms_message 
+		update sms_info 
 		<set>
 			<if test="msgNo != null">`msg_no` = #{msgNo}, </if>
 			<if test="iphoneNo != null">`phone_id` = #{iphoneNo}, </if>
@@ -112,11 +112,11 @@
 	</update>
 	
 	<delete id="remove">
-		delete from sms_message where key_id = #{value}
+		delete from sms_info where key_id = #{value}
 	</delete>
 	
 	<delete id="batchRemove">
-		delete from sms_message where key_id in
+		delete from sms_info where key_id in
 		<foreach item="id" collection="array" open="(" separator="," close=")">
 			#{id}
 		</foreach>

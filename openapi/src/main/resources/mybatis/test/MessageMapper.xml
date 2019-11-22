@@ -3,11 +3,11 @@
 
 <mapper namespace="com.test.dao.MessageDao">
 	<resultMap id="BaseResultMap" type="com.test.domain.MessageDO">
-		<id column="id" jdbcType="INTEGER" property="id" />
+		<id column="key_id" jdbcType="INTEGER" property="id" />
 		<result column="msg_no" jdbcType="VARCHAR" property="msgNo" />
-		<result column="iphone_no" jdbcType="VARCHAR" property="iphoneNo" />
-		<result column="msg_content" jdbcType="VARCHAR" property="msgContent" />
-		<result column="msg_time" jdbcType="INTEGER" property="msgTime" />
+		<result column="phone_id" jdbcType="VARCHAR" property="iphoneNo" />
+		<result column="content" jdbcType="VARCHAR" property="msgContent" />
+		<result column="send_time" jdbcType="INTEGER" property="msgTime" />
 		<result column="status" jdbcType="CHAR" property="status" />
 		<result column="create_by" jdbcType="VARCHAR" property="createBy" />
 		<result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
@@ -15,22 +15,22 @@
 		<result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
 	</resultMap>
 	<select id="get" resultMap="BaseResultMap">
-		select `id`,`msg_no`,`iphone_no`,`msg_content`,`msg_time`,`status`,`create_by`,`create_date`,`update_by`,`update_date` from sms_message where id = #{value}
+		select `key_id`,`msg_no`,`phone_id`,`content`,`send_time`,`status`,`create_by`,`create_date`,`update_by`,`update_date` from sms_message where key_id = #{value}
 	</select>
 
 	<select id="list" resultMap="BaseResultMap">
-		select `id`,`msg_no`,`iphone_no`,`msg_content`,`msg_time`,`status`,`create_by`,`create_date`,`update_by`,`update_date` from sms_message
+		select `key_id`,`msg_no`,`phone_id`,`content`,`send_time`,`status`,`create_by`,`create_date`,`update_by`,`update_date` from sms_message
 
         <where>  
-		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="id != null and id != ''"> and key_id = #{id} </if>
 		  		  <if test="msgNo != null and msgNo != ''"> and msg_no = #{msgNo} </if>
-		  		  <if test="iphoneList != null and iphoneList.size()>0"> and iphone_no in
+		  		  <if test="iphoneList != null and iphoneList.size()>0"> and phone_id in
 					  <foreach item="item"  index="index"  open="(" separator=","  close=")" collection="iphoneList">
 						  #{item}
 					  </foreach>
 		  		   </if>
-		  		  <if test="msgContent != null and msgContent != ''"> and msg_content = #{msgContent} </if>
-		  		  <if test="msgTime != null"> and unix_timestamp(msg_time)  &lt; #{msgTime} </if>
+		  		  <if test="msgContent != null and msgContent != ''"> and content = #{msgContent} </if>
+		  		  <if test="msgTime != null"> and unix_timestamp(send_time)  &lt; #{msgTime} </if>
 		  		  <if test="status != null and status != ''"> and status = #{status} </if>
 		  		  <if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
 		  		  <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
@@ -42,7 +42,7 @@
                 order by ${sort} ${order}
             </when>
 			<otherwise>
-                order by id desc
+                order by key_id desc
 			</otherwise>
         </choose>
 		<if test="offset != null and limit != null">
@@ -53,11 +53,11 @@
  	<select id="count" resultType="int">
 		select count(*) from sms_message
 		 <where>  
-		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="id != null and id != ''"> and key_id = #{id} </if>
 		  		  <if test="msgNo != null and msgNo != ''"> and msg_no = #{msgNo} </if>
-		  		  <if test="iphoneNo != null and iphoneNo != ''"> and iphone_no = #{iphoneNo} </if>
-		  		  <if test="msgContent != null and msgContent != ''"> and msg_content = #{msgContent} </if>
-		  		  <if test="msgTime != null and msgTime != ''"> and msg_time = #{msgTime} </if>
+		  		  <if test="iphoneNo != null and iphoneNo != ''"> and phone_id = #{iphoneNo} </if>
+		  		  <if test="msgContent != null and msgContent != ''"> and content = #{msgContent} </if>
+		  		  <if test="msgTime != null and msgTime != ''"> and send_time = #{msgTime} </if>
 		  		  <if test="status != null and status != ''"> and status = #{status} </if>
 		  		  <if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
 		  		  <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
@@ -69,11 +69,11 @@
 	<insert id="save" parameterType="com.test.domain.MessageDO">
 		insert into sms_message
 		(
-			`id`, 
+			`key_id`,
 			`msg_no`, 
-			`iphone_no`, 
-			`msg_content`, 
-			`msg_time`, 
+			`phone_id`, 
+			`content`, 
+			`send_time`, 
 			`status`, 
 			`create_by`, 
 			`create_date`, 
@@ -99,24 +99,24 @@
 		update sms_message 
 		<set>
 			<if test="msgNo != null">`msg_no` = #{msgNo}, </if>
-			<if test="iphoneNo != null">`iphone_no` = #{iphoneNo}, </if>
-			<if test="msgContent != null">`msg_content` = #{msgContent}, </if>
-			<if test="msgTime != null">`msg_time` = #{msgTime}, </if>
+			<if test="iphoneNo != null">`phone_id` = #{iphoneNo}, </if>
+			<if test="msgContent != null">`content` = #{msgContent}, </if>
+			<if test="msgTime != null">`send_time` = #{msgTime}, </if>
 			<if test="status != null">`status` = #{status}, </if>
 			<if test="createBy != null">`create_by` = #{createBy}, </if>
 			<if test="createDate != null">`create_date` = #{createDate}, </if>
 			<if test="updateBy != null">`update_by` = #{updateBy}, </if>
 			<if test="updateDate != null">`update_date` = #{updateDate}</if>
 		</set>
-		where id = #{id}
+		where key_id = #{id}
 	</update>
 	
 	<delete id="remove">
-		delete from sms_message where id = #{value}
+		delete from sms_message where key_id = #{value}
 	</delete>
 	
 	<delete id="batchRemove">
-		delete from sms_message where id in 
+		delete from sms_message where key_id in
 		<foreach item="id" collection="array" open="(" separator="," close=")">
 			#{id}
 		</foreach>

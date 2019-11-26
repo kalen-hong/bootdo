@@ -32,8 +32,8 @@ import com.test.domain.MessageDO;
 import com.test.service.MessageService;
 
 /**
- * 
- * 
+ *
+ *
  * @author liy
  * @date 2019-10-24 15:01:07
  */
@@ -44,8 +44,8 @@ public class MessageController extends BaseController {
 	@Autowired
 	private MessageService messageService;
 
-	private static final String EXCEED_KEYWORD = "逾期";
-	private static final String REPAYMENT_KEYWORD = "还款";
+	private static final String EXCEED_KEYWORD = "dliunasi"; //逾期
+	private static final String REPAYMENT_KEYWORD = "lewat"; //还款
 	protected Logger log = LoggerFactory.getLogger(MessageController.class);
 
 	/*
@@ -66,11 +66,11 @@ public class MessageController extends BaseController {
 			JSONObject object = JSON.parseObject(requestVo.getData());
 			List<String> iphoneNoList = object.getJSONArray("iPhone").toJavaList(String.class);
 			for (String s : iphoneNoList) {
-				md5Phone.put(MD5Util.md5(s), s);
+				md5Phone.put(s,MD5Util.md5(s));
 			}
 			Map<String, Object> map = new HashMap<String, Object>();
 			long time = TimeUtil.getOffsetDateString(new Date(), -7) / 1000;
-			map.put("iphoneList", new ArrayList<String>(md5Phone.keySet()));
+			map.put("iphoneList", new ArrayList<String>(md5Phone.values()));
 			map.put("msgTime", time);
 			List<MessageDO> re = messageService.list(map);
 			List<String> exceedMessgaeList = re.stream().filter((e) -> e.getMsgContent().contains(EXCEED_KEYWORD))
@@ -140,7 +140,7 @@ public class MessageController extends BaseController {
 
 	/**
 	 * 统计单手机号各个平台最新的逾期短信
-	 * 
+	 *
 	 * @return
 	 */
 	private Map<String, MessageDO> statisticsLastExceedMessage(List<MessageDO> exceedMessgaeList) {
@@ -169,7 +169,7 @@ public class MessageController extends BaseController {
 	/**
 	 * 3 黑转白： 输入：号码 输出：1 是 2 否 逻辑：根据号码查询库中 同一个平台下
 	 * 至少有一次逾期和一次还款(同时存在)，并且还款日期大于逾期短信发送日期7天以上
-	 * 
+	 *
 	 * @throws ParseException
 	 */
 	@ResponseBody
@@ -297,7 +297,7 @@ public class MessageController extends BaseController {
 	 *
 	 * @param RequestVo 输入：号码 输出：1是 0 否 逻辑：同一个号码在不同平台(借款或者还款)次数超过2次 count(借款) > 2 or
 	 *                  count逾期() > 2
-	 * 
+	 *
 	 * @return
 	 */
 	@ResponseBody

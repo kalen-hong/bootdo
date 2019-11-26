@@ -7,7 +7,7 @@ import java.security.MessageDigest;
 
 /* *
  * @Author tomsun28
- * @Description 
+ * @Description
  * @Date 20:48 2018/2/27
  */
 public class MD5Util {
@@ -40,21 +40,21 @@ public class MD5Util {
                 str[k++] = md5String[byte0 & 0xf];
             }
             // 返回加密后的字符串
-            return new String(str);
+            return new String(str).toLowerCase();
 
         }catch (Exception e) {
             LOGGER.warn(e.getMessage(),e);
             return null;
         }
     }
-    
+
     public static void main(String[] args) {
-		String tokenString="eyJhbGciOiJIUzUxMiIsInppcCI6IkRFRiJ9.eNokykEKgCAQQNG7zDohnSm128yIghElWFBEd89o-T7_hnnPMIGT4KI2SY1ktSJJXkkvWkVjyYYkxIGgg3pIm3nJha_GXGvjVuLKJX_mHSY9WHR-RDQdxLP8wfc4oHleAAAA__8.3wKNh7otfVmVxvB7JvhC3BwvI4aKmKGfyrPm53IXM8I92fZ2fELxoAPH-Febr8TOOPLiQ4cEFfPM1iTy8cCN4A";
-		String timestamp="2019-11-16 14:28:28";
-		System.out.println(md5(tokenString+timestamp));
+        String tokenString="eyJhbGciOiJIUzUxMiIsInppcCI6IkRFRiJ9.eNokykEKgCAQQNG7zDohnSm128yIghElWFBEd89o-T7_hnnPMIGT4KI2SY1ktSJJXkkvWkVjyYYkxIGgg3pIm3nJha_GXGvjVuLKJX_mHSY9WHR-RDQdxLP8wfc4oHleAAAA__8.3wKNh7otfVmVxvB7JvhC3BwvI4aKmKGfyrPm53IXM8I92fZ2fELxoAPH-Febr8TOOPLiQ4cEFfPM1iTy8cCN4A";
+        String timestamp="2019-11-16 14:28:28";
+        System.out.println(md5(tokenString+timestamp));
 
 //		String phone = "15013870136";
 //        System.out.println(md5(phone));
-	}
+    }
 
 }

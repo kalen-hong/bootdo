@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.test.domain.PhoneStatusDO;
+import com.test.service.PhoneStatusService;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +46,9 @@ public class MessageController extends BaseController {
 	@Autowired
 	private MessageService messageService;
 
+	@Autowired
+	private PhoneStatusService phoneStatusService;
+
 	private static final String EXCEED_KEYWORD = "dliunasi"; //逾期
 	private static final String REPAYMENT_KEYWORD = "lewat"; //还款
 	protected Logger log = LoggerFactory.getLogger(MessageController.class);
@@ -73,8 +78,15 @@ public class MessageController extends BaseController {
 			map.put("iphoneList", new ArrayList<String>(md5Phone.values()));
 			map.put("msgTime", time);
 			List<MessageDO> re = messageService.list(map);
+			if(re==null||re.size()==0){
+				return new ResponseVo<>(ResponseVo.SUCCESS, "不存在数据", new ArrayList());
+			}
 			List<String> exceedMessgaeList = re.stream().filter((e) -> e.getMsgContent().contains(EXCEED_KEYWORD))
 					.map(MessageDO::getIphoneNo).collect(Collectors.toList());
+
+			if (CollectionUtils.isEmpty(exceedMessgaeList)) {
+				return new ResponseVo<List<Map<String, String>>>(ResponseVo.SUCCESS, "不存在数据", new ArrayList());
+			}
 			List<Map<String, String>> dataList = new ArrayList<Map<String, String>>();
 			for (String phone : iphoneNoList) {
 				Map<String, String> singlePhoneBlackStatus = new HashMap<String, String>();
@@ -119,7 +131,7 @@ public class MessageController extends BaseController {
 		List<MessageDO> exceedMessgaeList = re.stream().filter((e) -> e.getMsgContent().contains(EXCEED_KEYWORD))
 				.collect(Collectors.toList());
 		if (CollectionUtils.isEmpty(exceedMessgaeList)) {
-			return new ResponseVo<List<Map<String, String>>>(ResponseVo.FAIL, "fail", null);
+			return new ResponseVo<List<Map<String, String>>>(ResponseVo.SUCCESS, "不存在数据", new ArrayList());
 		}
 		List<Map<String, String>> dataList = new ArrayList<Map<String, String>>();
 		Map<String, List<MessageDO>> iphoneGroupMap = exceedMessgaeList.stream()
@@ -192,7 +204,7 @@ public class MessageController extends BaseController {
 		map.put("iphoneList", new ArrayList<String>(md5Phone.keySet()));
 		List<MessageDO> messageList = messageService.list(map);
 		if (CollectionUtils.isEmpty(messageList)) {
-			return new ResponseVo<List<Map<String, String>>>(ResponseVo.FAIL, "fail", null);
+			return new ResponseVo<List<Map<String, String>>>(ResponseVo.SUCCESS, "不存在数据", new ArrayList());
 		}
 		Map<String, List<MessageDO>> iphoneGroupMap = messageList.stream()
 				.collect(Collectors.groupingBy(MessageDO::getIphoneNo));
@@ -255,41 +267,42 @@ public class MessageController extends BaseController {
 	/**
 	 * 号码状态查询，重复记录会替换调 输入：号码 输出：号码状态（根据AI机器平台返回的状态）
 	 * 逻辑：从AI机器人平台获取号码结果入库。然后根据号码查询出每个状态返回
-	 *
-	 * @param RequestVo
 	 * @return
 	 */
 	@ResponseBody
 	@PostMapping("/ListIPhoneStatus")
-	public ResponseVo<List<Map<String, String>>> ListIPhoneStatus(RequestVo<JSONObject> RequestVo) {
-//		// ResponseVo rvo = super.initSign(accessToken,timestamp,sign);
-//		ResponseVo rvo = new ResponseVo();
-//		if (ResponseVo.FAIL.equals(rvo.getCode())) {
-//			return rvo;
-//		}
-//
-//		Map md5Phone = new HashMap();
-//		// 明文号码集合
-//		List<String> iphoneNoList = (RequestVo.getData()).getJSONArray("iphoneList").toJavaList(String.class);
-//		for (String s : iphoneNoList) {
-//			md5Phone.put(s, MD5Util.md5(s));
-//		}
-//		Map map = new HashMap();
-//		long time = TimeUtil.getOffsetDateString(new Date(), -7) / 1000;
-//		map.put("iphoneList", new ArrayList<String>(md5Phone.values()));
-//		List<MessageDO> re = messageService.list(map);
-//
-//		Map<String, MessageDO> mapStream = re.stream()
-//				.collect(Collectors.toMap(MessageDO::getIphoneNo, a -> a, (k1, k2) -> k1));
-//		JSONObject jo = new JSONObject();
-//		for (String phone : iphoneNoList) {
-//			if (mapStream.containsKey(md5Phone.get(phone))) {
-//				jo.put("iPhone", phone);
-//				jo.put("status", mapStream.get(md5Phone.get(phone)).getStatus());
-//			}
-//		}
-//		reMap.put("data", jo);
-		return new ResponseVo<List<Map<String, String>>>(ResponseVo.SUCCESS, "success", null);
+	public ResponseVo<List<Map<String, String>>> ListIPhoneStatus(RequestVo<String> requestVo) {
+		ResponseVo<List<Map<String, String>>> rvo = super.initSign(requestVo);
+		if (ResponseVo.FAIL.equals(rvo.getCode())) {
+			return rvo;
+		}
+		Map md5Phone = new HashMap();
+		// 明文号码集合
+		JSONObject object = JSON.parseObject(requestVo.getData());
+		List<String> iphoneNoList = object.getJSONArray("iPhone").toJavaList(String.class);
+		for (String s : iphoneNoList) {
+			md5Phone.put(s,MD5Util.md5(s));
+		}
+		Map map = new HashMap();
+		List<Map<String, String>> dataList = new ArrayList<Map<String, String>>();
+		map.put("iphoneList", new ArrayList<String>(md5Phone.values()));
+		List<PhoneStatusDO> re = phoneStatusService.list(map);
+		if (CollectionUtils.isEmpty(re)) {
+			return new ResponseVo<List<Map<String, String>>>(ResponseVo.SUCCESS, "不存在数据", new ArrayList());
+		}
+		Map<String, PhoneStatusDO> mapStream = re.stream()
+				.collect(Collectors.toMap(PhoneStatusDO::getPhoneNo, a -> a, (k1, k2) -> k1));
+
+		for (String phone : iphoneNoList) {
+			Map<String, String> reMap = new HashMap<String, String>();
+			if (mapStream.containsKey(md5Phone.get(phone))) {
+				reMap.put("iPhone", phone);
+				reMap.put("status", mapStream.get(md5Phone.get(phone)).getStatus());
+				dataList.add(reMap);
+			}
+
+		}
+		return new ResponseVo<>(ResponseVo.SUCCESS, "success", dataList);
 	}
 
 	/**
@@ -320,7 +333,7 @@ public class MessageController extends BaseController {
 		map.put("iphoneList", new ArrayList<String>(md5PhoneMap.keySet()));
 		List<MessageDO> messageList = messageService.list(map);
 		if (CollectionUtils.isEmpty(messageList)) {
-			return new ResponseVo<List<Map<String, String>>>(ResponseVo.FAIL, "fail", null);
+			return new ResponseVo<List<Map<String, String>>>(ResponseVo.SUCCESS, "不存在数据", new ArrayList());
 		}
 		Map<String, List<MessageDO>> iphoneGroupMap = messageList.stream().filter(messag -> {
 			return messag.getMsgContent() != null;

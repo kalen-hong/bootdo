@@ -96,7 +96,7 @@ public class MessageController extends BaseController {
 			List<String> keyList = covert(dictDO.getValue());
 			for(String key :keyList){
 				List<String> reKeyList = re.stream().filter((e) -> e.getMsgContent().toLowerCase().contains(key))
-						.filter((e) -> TimeUtil.timeStringTransform(e.getMsgTime(),"yyyy-MM-dd HH:mm:ss")>time)
+						.filter((e) -> TimeUtil.timeStringTransform(e.getMsgTime(),"yyyy-MM-dd HH:mm:ss")<time)
 						.map(MessageDO::getIphoneNo).collect(Collectors.toList());
 				exceedMessgaeList.addAll(reKeyList);
 			}

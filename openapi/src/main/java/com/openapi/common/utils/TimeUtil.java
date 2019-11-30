@@ -183,7 +183,8 @@ public class TimeUtil {
 
 
     public static void main(String[] args) {
-//        System.out.println(isBeforeTime("19:00"));
+       System.out.println(getOffsetDateString(new Date(),-7));
+        System.out.println(timeStringTransform("2019-09-30 23:58:56","yyyy-MM-dd HH:mm:ss"));
 
     }
 
@@ -252,13 +253,12 @@ public class TimeUtil {
      *
      * @param timeStr
      * @param patternSrc
-     * @param patternDir
      * @return java.lang.String
      * @author wenhao.wang
      * @version v1.0
      * @date 2019/7/17 11:14
      */
-    public static String timeStringTransform(String timeStr, String patternSrc, String patternDir) {
+    public static Long timeStringTransform(String timeStr, String patternSrc) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(patternSrc);
         Date time = null;
         try {
@@ -266,8 +266,8 @@ public class TimeUtil {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        SimpleDateFormat dirDateFormat = new SimpleDateFormat(patternDir);
-        return dirDateFormat.format(time);
+
+        return time.getTime();
     }
 
 

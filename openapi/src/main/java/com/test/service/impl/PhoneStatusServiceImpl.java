@@ -6,6 +6,7 @@ import com.test.domain.MessageDO;
 import com.test.domain.PhoneStatusDO;
 import com.test.service.PhoneStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import java.util.Map;
  * @Copyright（C）: 2014-2019 X-Financial Inc.   All rights reserved.
  * 注意：本内容仅限于小赢科技有限责任公司内部传阅，禁止外泄以及用于其他的商业目的。
  */
+@Service
 public class PhoneStatusServiceImpl  implements PhoneStatusService {
 
     @Autowired

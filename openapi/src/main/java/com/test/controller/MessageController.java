@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.openapi.common.domain.DictDO;
+import com.openapi.common.service.DictService;
 import com.test.domain.PhoneStatusDO;
 import com.test.service.PhoneStatusService;
 import org.apache.commons.collections.CollectionUtils;
@@ -49,8 +51,13 @@ public class MessageController extends BaseController {
 	@Autowired
 	private PhoneStatusService phoneStatusService;
 
-	private static final String EXCEED_KEYWORD = "dliunasi"; //逾期
-	private static final String REPAYMENT_KEYWORD = "lewat"; //还款
+	@Autowired
+	private DictService dictService;
+
+
+	/*private static final String EXCEED_KEYWORD = "terlambat,sf"; //逾期
+	private static final String REPAYMENT_KEYWORD = "dilunasi"; //还款
+	private static final String PAYMENT_KEYWORD = "Pinjaman"; //借款*/
 	protected Logger log = LoggerFactory.getLogger(MessageController.class);
 
 	/*
@@ -76,16 +83,25 @@ public class MessageController extends BaseController {
 			Map<String, Object> map = new HashMap<String, Object>();
 			long time = TimeUtil.getOffsetDateString(new Date(), -7) / 1000;
 			map.put("iphoneList", new ArrayList<String>(md5Phone.values()));
-			map.put("msgTime", time);
+			//map.put("msgTime", time);
 			List<MessageDO> re = messageService.list(map);
 			if(re==null||re.size()==0){
 				return new ResponseVo<>(ResponseVo.SUCCESS, "不存在数据", new ArrayList());
 			}
-			List<String> exceedMessgaeList = re.stream().filter((e) -> e.getMsgContent().contains(EXCEED_KEYWORD))
-					.map(MessageDO::getIphoneNo).collect(Collectors.toList());
+
+			List<String> exceedMessgaeList = new ArrayList<String>();
+			DictDO dictDO = dictService.get(1L);
+
+			List<String> keyList = covert(dictDO.getValue());
+			for(String key :keyList){
+				List<String> reKeyList = re.stream().filter((e) -> e.getMsgContent().toLowerCase().contains(key))
+						.filter((e) -> TimeUtil.timeStringTransform(e.getMsgTime(),"yyyy-MM-dd HH:mm:ss")>time)
+						.map(MessageDO::getIphoneNo).collect(Collectors.toList());
+				exceedMessgaeList.addAll(reKeyList);
+			}
 
 			if (CollectionUtils.isEmpty(exceedMessgaeList)) {
-				return new ResponseVo<List<Map<String, String>>>(ResponseVo.SUCCESS, "不存在数据", new ArrayList());
+				return new ResponseVo<List<Map<String, String>>>(ResponseVo.SUCCESS, "七天内不存在数据", new ArrayList());
 			}
 			List<Map<String, String>> dataList = new ArrayList<Map<String, String>>();
 			for (String phone : iphoneNoList) {
@@ -128,8 +144,17 @@ public class MessageController extends BaseController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("iphoneList", new ArrayList<String>(md5Phone.keySet()));
 		List<MessageDO> re = messageService.list(map);
-		List<MessageDO> exceedMessgaeList = re.stream().filter((e) -> e.getMsgContent().contains(EXCEED_KEYWORD))
-				.collect(Collectors.toList());
+
+		List<MessageDO> exceedMessgaeList = new ArrayList<MessageDO>();
+		List<String> keyList = covert(dictService.get(1L).getValue());
+		for(String key :keyList){
+			List<MessageDO> reKeyList = re.stream().filter((e) -> e.getMsgContent().toLowerCase().contains(key))
+					.collect(Collectors.toList());
+			exceedMessgaeList.addAll(reKeyList);
+		}
+
+
+
 		if (CollectionUtils.isEmpty(exceedMessgaeList)) {
 			return new ResponseVo<List<Map<String, String>>>(ResponseVo.SUCCESS, "不存在数据", new ArrayList());
 		}
@@ -212,11 +237,21 @@ public class MessageController extends BaseController {
 		for (String phone : iphoneGroupMap.keySet()) {
 			List<MessageDO> singlePhoneMessageList = iphoneGroupMap.get(phone);
 			// 逾期
-			List<MessageDO> exceedList = singlePhoneMessageList.stream()
-					.filter((e) -> e.getMsgContent().contains(EXCEED_KEYWORD)).collect(Collectors.toList());
+			List<MessageDO> exceedList = new ArrayList<MessageDO>();
+			List<String> keyList = covert(dictService.get(1L).getValue());
+			for(String key :keyList){
+				List<MessageDO> rekeyList = singlePhoneMessageList.stream()
+						.filter((e) -> e.getMsgContent().toLowerCase().contains(key)).collect(Collectors.toList());
+				exceedList.addAll(rekeyList);
+			}
+
 			// 还款
-			List<MessageDO> repaymentList = singlePhoneMessageList.stream()
-					.filter((e) -> e.getMsgContent().contains(REPAYMENT_KEYWORD)).collect(Collectors.toList());
+			List<MessageDO> repaymentList = new ArrayList<MessageDO>();
+			List<String> repayKeyList = covert(dictService.get(2L).getValue());
+			for(String key :repayKeyList){
+				repaymentList.addAll(singlePhoneMessageList.stream()
+						.filter((e) -> e.getMsgContent().toLowerCase().contains(key)).collect(Collectors.toList()));
+			}
 
 			if (exceedList.size() == 0 || repaymentList.size() == 0) {
 				continue;
@@ -308,7 +343,7 @@ public class MessageController extends BaseController {
 	/**
 	 * 号码多投状态查询
 	 *
-	 * @param RequestVo 输入：号码 输出：1是 0 否 逻辑：同一个号码在不同平台(借款或者还款)次数超过2次 count(借款) > 2 or
+	 * @param  输入：号码 输出：1是 0 否 逻辑：同一个号码在不同平台(借款或者还款)次数超过2次 count(借款) > 2 or
 	 *                  count逾期() > 2
 	 *
 	 * @return
@@ -341,23 +376,46 @@ public class MessageController extends BaseController {
 		List<Map<String, String>> dataList = new ArrayList<Map<String, String>>();
 		for (String md5Phone : iphoneGroupMap.keySet()) {
 			List<MessageDO> singlePhoneMessageList = iphoneGroupMap.get(md5Phone);
-			long exceedNum = singlePhoneMessageList.stream()
-					.filter(message -> message.getMsgContent().contains(EXCEED_KEYWORD)).count();
+			long exceedNum = 0;
+			//借款
+			List<String> keyList = covert(dictService.get(3L).getValue());
+			for(String key :keyList){
+				exceedNum = exceedNum +singlePhoneMessageList.stream()
+						.filter(message -> message.getMsgContent().toLowerCase().contains(key)).count();
+			}
+
 			Map<String, String> tempMap = new HashMap<String, String>();
 			tempMap.put("iPhone", md5PhoneMap.get(md5Phone));
 			tempMap.put("status", "0");
-			if (exceedNum > 2) {
+			if (exceedNum >= 2) {
 				tempMap.put("status", "1");
 				dataList.add(tempMap);
 				continue;
 			}
-			long repaymentNum = singlePhoneMessageList.stream()
-					.filter(message -> message.getMsgContent().contains(REPAYMENT_KEYWORD)).count();
-			if (repaymentNum > 2) {
-				tempMap.put("status", "1");
+			//还款
+			List<String> repayKeyList = covert(dictService.get(2L).getValue());
+			long repaymentNum = 0;
+			for(String key :repayKeyList){
+				repaymentNum = repaymentNum+ singlePhoneMessageList.stream()
+						.filter(message -> message.getMsgContent().toLowerCase().contains(key)).count();
 			}
-			dataList.add(tempMap);
+			if (repaymentNum >= 2) {
+				tempMap.put("status", "1");
+				dataList.add(tempMap);
+			}
+
 		}
 		return new ResponseVo<List<Map<String, String>>>(ResponseVo.SUCCESS, "success", dataList);
+	}
+
+	private List<String> covert(String s){
+		List list  = new ArrayList();
+		String []  re = s.split(",");
+		if(re.length>0){
+			for(String term :re){
+				list.add(term.toLowerCase());
+			}
+		}
+		return list;
 	}
 }

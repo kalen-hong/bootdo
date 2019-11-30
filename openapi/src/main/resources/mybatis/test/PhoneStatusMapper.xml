@@ -17,32 +17,32 @@
 	<select id="list" resultMap="BaseResultMap">
 		select `id`,`phone_no`,`status_info`,`status`,`create_by`,`create_date`,`update_by`,`update_date` from phone_status
 
-        <where>  
-		  		  <if test="id != null and id != ''"> and id = #{id} </if>
-		  		  <if test="iphoneList != null and iphoneList.size()>0"> and phone_no in
-					  <foreach item="item"  index="index"  open="(" separator=","  close=")" collection="iphoneList">
-						  #{item}
-					  </foreach>
-		  		   </if>
-		  		  <if test="status != null and status != ''"> and status = #{status} </if>
-		  		  <if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
-		  		  <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
-		  		  <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy} </if>
-		  		  <if test="updateDate != null and updateDate != ''"> and update_date = #{updateDate} </if>
-		  		</where>
-        <choose>
-            <when test="sort != null and sort.trim() != ''">
-                order by ${sort} ${order}
-            </when>
+		<where>
+			<if test="id != null and id != ''"> and id = #{id} </if>
+			<if test="iphoneList != null and iphoneList.size()>0"> and phone_no in
+				<foreach item="item"  index="index"  open="(" separator=","  close=")" collection="iphoneList">
+					#{item}
+				</foreach>
+			</if>
+			<if test="status != null and status != ''"> and status = #{status} </if>
+			<if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+			<if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+			<if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy} </if>
+			<if test="updateDate != null and updateDate != ''"> and update_date = #{updateDate} </if>
+		</where>
+		<choose>
+			<when test="sort != null and sort.trim() != ''">
+				order by ${sort} ${order}
+			</when>
 			<otherwise>
-                order by key_id desc
+				order by id desc
 			</otherwise>
-        </choose>
+		</choose>
 		<if test="offset != null and limit != null">
 			limit #{offset}, #{limit}
 		</if>
 	</select>
-	
+
 
 
 </mapper>

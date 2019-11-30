@@ -100,9 +100,6 @@ public class MessageController extends BaseController {
 				exceedMessgaeList.addAll(reKeyList);
 			}
 
-			if (CollectionUtils.isEmpty(exceedMessgaeList)) {
-				return new ResponseVo<List<Map<String, String>>>(ResponseVo.SUCCESS, "七天内不存在数据", new ArrayList());
-			}
 			List<Map<String, String>> dataList = new ArrayList<Map<String, String>>();
 			for (String phone : iphoneNoList) {
 				Map<String, String> singlePhoneBlackStatus = new HashMap<String, String>();
@@ -144,7 +141,9 @@ public class MessageController extends BaseController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("iphoneList", new ArrayList<String>(md5Phone.keySet()));
 		List<MessageDO> re = messageService.list(map);
-
+        if(re.isEmpty()){
+            return new ResponseVo<>(ResponseVo.SUCCESS, "不存在数据", new ArrayList());
+        }
 		List<MessageDO> exceedMessgaeList = new ArrayList<MessageDO>();
 		List<String> keyList = covert(dictService.get(1L).getValue());
 		for(String key :keyList){
@@ -198,9 +197,14 @@ public class MessageController extends BaseController {
 	}
 
 	private String getPlatformName(String messageContent) {
-		int leftIndex = messageContent.indexOf("[");
-		int rightIndex = messageContent.indexOf("]");
-		return messageContent.substring(leftIndex + 1, rightIndex);
+	    if(messageContent.contains("[")  && messageContent.contains("]")){
+            int leftIndex = messageContent.indexOf("[");
+            int rightIndex = messageContent.indexOf("]");
+            return messageContent.substring(leftIndex + 1, rightIndex);
+        }else{
+	        return messageContent;
+        }
+
 	}
 
 	/**

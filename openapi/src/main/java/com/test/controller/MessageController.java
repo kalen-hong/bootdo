@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import com.openapi.common.domain.DictDO;
 import com.openapi.common.service.DictService;
+import com.openapi.system.vo.Message;
 import com.test.domain.PhoneStatusDO;
 import com.test.service.PhoneStatusService;
 import org.apache.commons.collections.CollectionUtils;
@@ -412,7 +413,7 @@ public class MessageController extends BaseController {
 		return new ResponseVo<List<Map<String, String>>>(ResponseVo.SUCCESS, "success", dataList);
 	}
 
-	private List<String> covert(String s){
+	private static  List<String> covert(String s){
 		List list  = new ArrayList();
 		String []  re = s.split(",");
 		if(re.length>0){
@@ -422,4 +423,27 @@ public class MessageController extends BaseController {
 		}
 		return list;
 	}
+
+    public static void main(String[] args) {
+        List<MessageDO> re = new ArrayList<>();
+        MessageDO do1 =  new MessageDO();
+        do1.setMsgContent("[sdf]sdfl");
+        do1.setMsgTime("2019-11-30 01:07:54");
+        re.add(do1);
+        if(re==null||re.size()==0){
+            return;
+        }
+        List<String> exceedMessgaeList = new ArrayList<String>();
+
+        long time = TimeUtil.getOffsetDateString(new Date(), -7) / 1000;
+        System.out.println(TimeUtil.timeStringTransform(do1.getMsgTime(),"yyyy-MM-dd HH:mm:ss")<time);
+        List<String> keyList =covert("sdfl");
+        for(String key :keyList){
+            List<String> reKeyList = re.stream().filter((e) -> e.getMsgContent().toLowerCase().contains(key))
+                    .filter((e) -> TimeUtil.timeStringTransform(e.getMsgTime(),"yyyy-MM-dd HH:mm:ss")<time)
+                    .map(MessageDO::getIphoneNo).collect(Collectors.toList());
+            exceedMessgaeList.addAll(reKeyList);
+        }
+        System.out.println(exceedMessgaeList.size());
+    }
 }

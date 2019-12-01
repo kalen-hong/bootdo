@@ -82,7 +82,7 @@ public class MessageController extends BaseController {
 				md5Phone.put(s,MD5Util.md5(s));
 			}
 			Map<String, Object> map = new HashMap<String, Object>();
-			long time = TimeUtil.getOffsetDateString(new Date(), -7) / 1000;
+			long time = TimeUtil.getOffsetDateString(new Date(), -7) ;
 			map.put("iphoneList", new ArrayList<String>(md5Phone.values()));
 			//map.put("msgTime", time);
 			List<MessageDO> re = messageService.list(map);
@@ -427,17 +427,21 @@ public class MessageController extends BaseController {
     public static void main(String[] args) {
         List<MessageDO> re = new ArrayList<>();
         MessageDO do1 =  new MessageDO();
-        do1.setMsgContent("[sdf]sdfl");
-        do1.setMsgTime("2019-11-30 01:07:54");
+        do1.setMsgContent("[sef]terlambat! Ang iyong cash loan RP.3200 ay due na ngayon. Icheck ang ME tab at MY LOANS upang makapagbayad. Pay NOW to avoid late fees. (Atome)");
+        do1.setMsgTime("2019-11-21 01:07:54");
         re.add(do1);
         if(re==null||re.size()==0){
             return;
         }
         List<String> exceedMessgaeList = new ArrayList<String>();
 
-        long time = TimeUtil.getOffsetDateString(new Date(), -7) / 1000;
+        long time = TimeUtil.getOffsetDateString(new Date(), -7);
         System.out.println(TimeUtil.timeStringTransform(do1.getMsgTime(),"yyyy-MM-dd HH:mm:ss")<time);
-        List<String> keyList =covert("sdfl");
+        List<String> keyList =covert("terlambat");
+		System.out.println(do1.getMsgContent().toLowerCase().contains("terlambat"));
+		System.out.println(TimeUtil.timeStringTransform(do1.getMsgTime(),"yyyy-MM-dd HH:mm:ss")<time);
+		System.out.println(TimeUtil.timeStringTransform(do1.getMsgTime(),"yyyy-MM-dd HH:mm:ss"));
+		System.out.println(time);
         for(String key :keyList){
             List<String> reKeyList = re.stream().filter((e) -> e.getMsgContent().toLowerCase().contains(key))
                     .filter((e) -> TimeUtil.timeStringTransform(e.getMsgTime(),"yyyy-MM-dd HH:mm:ss")<time)

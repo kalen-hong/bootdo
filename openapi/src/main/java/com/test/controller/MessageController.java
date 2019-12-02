@@ -166,9 +166,16 @@ public class MessageController extends BaseController {
 			for (Map.Entry<String, MessageDO> entry : singlePhoneExceedMap.entrySet()) {
 				Map<String, String> temp = new HashMap<String, String>();
 				temp.put("iphone", md5Phone.get(phone));
-				temp.put("platName", entry.getKey());
-				String exceedAmount = MathUtils.getExceedAmount(entry.getValue().getMsgContent());
-				temp.put("amount", exceedAmount);
+
+				if(entry.getKey()!=null){
+					temp.put("platName", entry.getKey());
+					String exceedAmount = MathUtils.getExceedAmount(entry.getValue().getMsgContent());
+					temp.put("amount", exceedAmount);
+				}else{
+					temp.put("platName", null);
+					temp.put("amount", null);
+				}
+
 				dataList.add(temp);
 			}
 		}
@@ -184,18 +191,55 @@ public class MessageController extends BaseController {
 		Map<String, MessageDO> exceedMap = new HashMap<String, MessageDO>();
 		exceedMessgaeList.forEach(message -> {
 			String platform = getPlatformName(message.getMsgContent());
-			if (exceedMap.containsKey(platform)) {
-				MessageDO existMessageDO = exceedMap.get(platform);
-				// 是否是最新的逾期短信
-				if (existMessageDO.getCreateDate().before(message.getCreateDate())) {
+			if(platform!=null){
+				if (exceedMap.containsKey(platform)) {
+					MessageDO existMessageDO = exceedMap.get(platform);
+					// 是否是最新的逾期短信
+					if (existMessageDO.getCreateDate().before(message.getCreateDate())) {
+						exceedMap.put(platform, message);
+					}
+				} else {
 					exceedMap.put(platform, message);
 				}
-			} else {
-				exceedMap.put(platform, message);
+			}else{
+				exceedMap.put(null,message);
 			}
+
 		});
 		return exceedMap;
 	}
+
+
+    /**
+     * 根据平台分组
+     *
+     * @return
+     */
+    private Map<String, List<MessageDO>> groupPlatform(List<MessageDO> exceedMessgaeList) {
+        Map<String, List<MessageDO>> exceedMap = new HashMap<String, List<MessageDO>>();
+        exceedMessgaeList.forEach(message -> {
+            String platform = getPlatformName(message.getMsgContent());
+            if(platform!=null){
+                if (exceedMap.containsKey(platform)) {
+                     exceedMap.get(platform).add(message);
+                } else {
+                    List<MessageDO>  list =  new ArrayList<MessageDO>();
+                    list.add(message);
+                    exceedMap.put(platform,list);
+                }
+            }else{
+                if(exceedMap.containsKey("notExist")){
+                    exceedMap.get("notExist").add(message);
+                }else{
+                    List<MessageDO>  list =  new ArrayList<MessageDO>();
+                    list.add(message);
+                    exceedMap.put("notExist",list);
+                }
+            }
+
+        });
+        return exceedMap;
+    }
 
 	private String getPlatformName(String messageContent) {
 	    if(messageContent.contains("[")  && messageContent.contains("]")){
@@ -203,7 +247,8 @@ public class MessageController extends BaseController {
             int rightIndex = messageContent.indexOf("]");
             return messageContent.substring(leftIndex + 1, rightIndex);
         }else{
-	        return messageContent;
+	    	//签名不对
+	        return null;
         }
 
 	}
@@ -236,58 +281,70 @@ public class MessageController extends BaseController {
 		if (CollectionUtils.isEmpty(messageList)) {
 			return new ResponseVo<List<Map<String, String>>>(ResponseVo.SUCCESS, "不存在数据", new ArrayList());
 		}
-		Map<String, List<MessageDO>> iphoneGroupMap = messageList.stream()
-				.collect(Collectors.groupingBy(MessageDO::getIphoneNo));
+		/*Map<String, List<MessageDO>> iphoneGroupMap = messageList.stream()
+				.collect(Collectors.groupingBy(MessageDO::getMsgContent));*/
+
+        Map<String, List<MessageDO>> platformGroupMap =  groupPlatform(messageList);
+
 		Map<String, String> meetConditionMap = new HashMap<String, String>();
-		for (String phone : iphoneGroupMap.keySet()) {
-			List<MessageDO> singlePhoneMessageList = iphoneGroupMap.get(phone);
-			// 逾期
-			List<MessageDO> exceedList = new ArrayList<MessageDO>();
-			List<String> keyList = covert(dictService.get(1L).getValue());
-			for(String key :keyList){
-				List<MessageDO> rekeyList = singlePhoneMessageList.stream()
-						.filter((e) -> e.getMsgContent().toLowerCase().contains(key)).collect(Collectors.toList());
-				exceedList.addAll(rekeyList);
-			}
+		for (String platform : platformGroupMap.keySet()) {
+            List<MessageDO> pList =  platformGroupMap.get(platform);
 
-			// 还款
-			List<MessageDO> repaymentList = new ArrayList<MessageDO>();
-			List<String> repayKeyList = covert(dictService.get(2L).getValue());
-			for(String key :repayKeyList){
-				repaymentList.addAll(singlePhoneMessageList.stream()
-						.filter((e) -> e.getMsgContent().toLowerCase().contains(key)).collect(Collectors.toList()));
-			}
+            Map<String, List<MessageDO>> iphoneGroupMap = pList.stream()
+                    .collect(Collectors.groupingBy(MessageDO::getIphoneNo));
 
-			if (exceedList.size() == 0 || repaymentList.size() == 0) {
-				continue;
-			}
-			if (exceedList.size() > 1) {
-				exceedList.sort(new Comparator<MessageDO>() {
+            for(String phone : iphoneGroupMap.keySet()){
 
-					@Override
-					public int compare(MessageDO o1, MessageDO o2) {
-						try {
-							Date date1 = DateUtils.parse(DateUtils.DATE_TIME_PATTERN, o1.getMsgTime());
-							Date date2 = DateUtils.parse(DateUtils.DATE_TIME_PATTERN, o2.getMsgTime());
-							return date1.after(date2) ? 1 : 0;
-						} catch (ParseException e) {
-							return 0;
-						}
+                List<MessageDO> singlePhoneMessageList = iphoneGroupMap.get(phone);
+                // 逾期
+                List<MessageDO> exceedList = new ArrayList<MessageDO>();
+                List<String> keyList = covert(dictService.get(1L).getValue());
+                for(String key :keyList){
+                    List<MessageDO> rekeyList = singlePhoneMessageList.stream()
+                            .filter((e) -> e.getMsgContent().toLowerCase().contains(key)).collect(Collectors.toList());
+                    exceedList.addAll(rekeyList);
+                }
 
-					}
-				});
-			}
-			String lastExceedMsgTimeStr = exceedList.get(0).getMsgTime();
-			for (MessageDO msg : repaymentList) {
-				Date lastExceedMsgDate = DateUtils.parse(DateUtils.DATE_TIME_PATTERN, lastExceedMsgTimeStr);
-				Date currMsgTime = DateUtils.parse(DateUtils.DATE_TIME_PATTERN, msg.getMsgTime());
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(currMsgTime);
-				cal.add(Calendar.DAY_OF_MONTH, -7);
-				if (lastExceedMsgDate.before(cal.getTime())) {
-					meetConditionMap.put(md5Phone.get(msg.getIphoneNo()), "1");
-				}
-			}
+                // 还款
+                List<MessageDO> repaymentList = new ArrayList<MessageDO>();
+                List<String> repayKeyList = covert(dictService.get(2L).getValue());
+                for(String key :repayKeyList){
+                    repaymentList.addAll(singlePhoneMessageList.stream()
+                            .filter((e) -> e.getMsgContent().toLowerCase().contains(key)).collect(Collectors.toList()));
+                }
+
+                if (exceedList.size() == 0 || repaymentList.size() == 0) {
+                    continue;
+                }
+                if (exceedList.size() > 1) {
+                    exceedList.sort(new Comparator<MessageDO>() {
+
+                        @Override
+                        public int compare(MessageDO o1, MessageDO o2) {
+                            try {
+                                Date date1 = DateUtils.parse(DateUtils.DATE_TIME_PATTERN, o1.getMsgTime());
+                                Date date2 = DateUtils.parse(DateUtils.DATE_TIME_PATTERN, o2.getMsgTime());
+                                return date1.after(date2) ? 1 : 0;
+                            } catch (ParseException e) {
+                                return 0;
+                            }
+
+                        }
+                    });
+                }
+                String lastExceedMsgTimeStr = exceedList.get(0).getMsgTime();
+                for (MessageDO msg : repaymentList) {
+                    Date lastExceedMsgDate = DateUtils.parse(DateUtils.DATE_TIME_PATTERN, lastExceedMsgTimeStr);
+                    Date currMsgTime = DateUtils.parse(DateUtils.DATE_TIME_PATTERN, msg.getMsgTime());
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(currMsgTime);
+                    cal.add(Calendar.DAY_OF_MONTH, -7);
+                    if (lastExceedMsgDate.after(cal.getTime())) {
+                        meetConditionMap.put(md5Phone.get(msg.getIphoneNo()), "1");
+                    }
+                }
+            }
+
 		}
 		for (String phone : iphoneNoList) {
 			if (!meetConditionMap.containsKey(phone)) {
@@ -348,7 +405,7 @@ public class MessageController extends BaseController {
 	/**
 	 * 号码多投状态查询
 	 *
-	 * @param  输入：号码 输出：1是 0 否 逻辑：同一个号码在不同平台(借款或者还款)次数超过2次 count(借款) > 2 or
+	 * @param 号码 输出：1是 0 否 逻辑：同一个号码在不同平台(借款或者还款)次数超过2次 count(借款) > 2 or
 	 *                  count逾期() > 2
 	 *
 	 * @return
@@ -378,36 +435,47 @@ public class MessageController extends BaseController {
 		Map<String, List<MessageDO>> iphoneGroupMap = messageList.stream().filter(messag -> {
 			return messag.getMsgContent() != null;
 		}).collect(Collectors.groupingBy(MessageDO::getIphoneNo));
+
 		List<Map<String, String>> dataList = new ArrayList<Map<String, String>>();
 		for (String md5Phone : iphoneGroupMap.keySet()) {
+            Map<String, String> tempMap = new HashMap<String, String>();
+            tempMap.put("iPhone", md5PhoneMap.get(md5Phone));
+            tempMap.put("status", "0");
+            //号码
 			List<MessageDO> singlePhoneMessageList = iphoneGroupMap.get(md5Phone);
-			long exceedNum = 0;
-			//借款
-			List<String> keyList = covert(dictService.get(3L).getValue());
-			for(String key :keyList){
-				exceedNum = exceedNum +singlePhoneMessageList.stream()
-						.filter(message -> message.getMsgContent().toLowerCase().contains(key)).count();
-			}
+            //平台
+            Map<String, List<MessageDO>> platformGroupMap =  groupPlatform(singlePhoneMessageList);
+            //还款map
+            Map map1 = new HashMap();
+            //借款map
+            Map map2 = new HashMap();
 
-			Map<String, String> tempMap = new HashMap<String, String>();
-			tempMap.put("iPhone", md5PhoneMap.get(md5Phone));
-			tempMap.put("status", "0");
-			if (exceedNum >= 2) {
-				tempMap.put("status", "1");
-				dataList.add(tempMap);
-				continue;
-			}
-			//还款
-			List<String> repayKeyList = covert(dictService.get(2L).getValue());
-			long repaymentNum = 0;
-			for(String key :repayKeyList){
-				repaymentNum = repaymentNum+ singlePhoneMessageList.stream()
-						.filter(message -> message.getMsgContent().toLowerCase().contains(key)).count();
-			}
-			if (repaymentNum >= 2) {
-				tempMap.put("status", "1");
-				dataList.add(tempMap);
-			}
+            for(String platform :platformGroupMap.keySet()){
+                    List<MessageDO> pList = platformGroupMap.get(platform);
+
+                    //借款
+                    List<String> keyList = covert(dictService.get(3L).getValue());
+                    long exceedNum = 0;
+                    for(String key :keyList){
+                        exceedNum = exceedNum +pList.stream()
+                                .filter(message -> message.getMsgContent().toLowerCase().contains(key)).count();
+                    }
+
+                    List<String> repayKeyList = covert(dictService.get(2L).getValue());
+                    long repaymentNum = 0;
+                    for(String key :repayKeyList){
+                        repaymentNum = repaymentNum+ pList.stream()
+                                .filter(message -> message.getMsgContent().toLowerCase().contains(key)).count();
+                    }
+
+                    if((map1.size()!=0 && exceedNum!=0) || (map2.size()!=0 && repaymentNum!=0)){
+                        tempMap.put("status", "1");
+                    }
+                    map1.put(platform,repayKeyList);
+                    map2.put(platform,exceedNum);
+            }
+
+			dataList.add(tempMap);
 
 		}
 		return new ResponseVo<List<Map<String, String>>>(ResponseVo.SUCCESS, "success", dataList);

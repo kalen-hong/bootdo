@@ -48,8 +48,7 @@ public class MathUtils {
 	
 	public static void main(String[] args) {
 		String msg="[LendingAdda] The verification code is 234161. The code is valid within 5 minutes. Don't share it to other people.";
-		int leftIndex=msg.indexOf("[");
-		int rightIndex=msg.indexOf("]");
-		System.out.println(msg.substring(leftIndex+1, rightIndex));
+
+		System.out.println(getExceedAmount(msg));
 	}
 }

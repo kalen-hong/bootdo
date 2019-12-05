@@ -346,18 +346,24 @@ public class MessageController extends BaseController {
             }
 
 		}
-		for (String phone : iphoneNoList) {
-			if (!meetConditionMap.containsKey(phone)) {
-				meetConditionMap.put(phone, "0");
-			}
-		}
 		List<Map<String, String>> dataList = new ArrayList<Map<String, String>>();
-		for (String phone : meetConditionMap.keySet()) {
+		for (String phone : iphoneNoList) {
+			Map<String, String> temp = new HashMap<String, String>();
+			if (!meetConditionMap.containsKey(phone)) {
+				temp.put("isWhite", "0");
+			}else{
+				temp.put("isWhite", "1");
+			}
+			temp.put("iPhone", phone);
+			dataList.add(temp);
+		}
+
+		/*for (String phone : meetConditionMap.keySet()) {
 			Map<String, String> temp = new HashMap<String, String>();
 			temp.put("iPhone", phone);
 			temp.put("isWhite", meetConditionMap.get(phone));
 			dataList.add(temp);
-		}
+		}*/
 		return new ResponseVo<List<Map<String, String>>>(ResponseVo.SUCCESS, "success", dataList);
 	}
 
